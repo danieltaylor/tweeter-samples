@@ -18,4 +18,21 @@
     <string name="title_activity_login">Sign in</string>
     <string name="followeeCount">Following: %d</string>
     <string name="followerCount">Followers: %d</string>
+
+    <string name="password">password</string>
+    <string name="username">\@username</string>
+    <string name="firstName">first name</string>
+    <string name="lastName">last name</string>
+    <string name="takeAPhoto">take a photo</string>
+    <string name="register">Register</string>
+
+    <string name="sampleTimestamp">Oct 7 2020 11:20 AM</string>
+    <string name="sampleStatusBody">This is a sample post</string>
+
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
+
+    <string name="separator">" - "</string>
+    <string name="post">Post</string>
+    <string name="cancel">Cancel</string>
 </resources>

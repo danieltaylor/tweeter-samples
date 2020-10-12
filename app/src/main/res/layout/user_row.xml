@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".view.main.following.FollowingFragment">
+    tools:context=".view.main.following.FollowingFragment"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/userImage"
@@ -14,11 +17,11 @@
         android:contentDescription="@string/userImageContentDescription" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/userImage">
+        android:layout_toEndOf="@id/userImage"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/userName"
@@ -26,12 +29,12 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:text="@string/sampleUserName"/>
+            tools:text="@string/sampleUserName" />
 
         <TextView
             android:id="@+id/userAlias"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/sampleAlias"/>
+            tools:text="@string/sampleAlias" />
     </LinearLayout>
 </RelativeLayout>

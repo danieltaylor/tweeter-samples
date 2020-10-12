@@ -3,8 +3,11 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.LoginService;
+import edu.byu.cs.tweeter.model.service.RegisterService;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 
 /**
  * The presenter for the login functionality of the application.
@@ -37,5 +40,15 @@ public class LoginPresenter {
     public LoginResponse login(LoginRequest loginRequest) throws IOException {
         LoginService loginService = new LoginService();
         return loginService.login(loginRequest);
+    }
+
+    /**
+     * Makes a register request.
+     *
+     * @param registerRequest the request.
+     */
+    public RegisterResponse register(RegisterRequest registerRequest) throws IOException {
+        RegisterService registerService = new RegisterService();
+        return registerService.register(registerRequest);
     }
 }

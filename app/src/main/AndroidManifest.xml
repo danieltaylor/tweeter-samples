@@ -12,8 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".view.LoginActivity"
-            android:label="@string/title_activity_login"
+            android:name=".view.login.LoginActivity"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +23,12 @@
         <activity
             android:name=".view.main.MainActivity"
             android:label="@string/title_activity_main">
+        </activity>
+        <activity
+            android:name=".view.profile.ProfileActivity">
+        </activity>
+        <activity
+            android:name=".view.main.post.PostActivity">
         </activity>
     </application>
 

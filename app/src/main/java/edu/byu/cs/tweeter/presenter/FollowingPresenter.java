@@ -14,7 +14,7 @@ public class FollowingPresenter {
     private final View view;
 
     /**
-     * The interface by which this presenter communicates with it's view.
+     * The interface by which this presenter communicates with its view.
      */
     public interface View {
         // If needed, specify methods here that will be called on the view in response to model updates

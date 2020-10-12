@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    tools:context=".view.main.post.PostActivity">
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:text="@android:string/cancel"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1" />
+
+        <Button
+            android:id="@+id/postButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:text="@string/post"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/userImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/buttons"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:contentDescription="@string/userImageContentDescription" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttons"
+        android:layout_toEndOf="@+id/userImage"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sampleUserName"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/separator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/separator"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/userAlias"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sampleAlias"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            tools:text="@string/sampleTimestamp" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/statusBody"
+        android:layout_width="match_parent"
+        android:layout_height="239dp"
+        android:layout_below="@+id/userImage"
+        android:autoLink="web"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:textSize="24sp"
+        tools:text="@string/sampleStatusBody" />
+
+</RelativeLayout>
