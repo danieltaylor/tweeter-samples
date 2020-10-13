@@ -82,8 +82,8 @@
                     android:id="@+id/followButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorAccent"
-                    android:text="@string/following" />
+                    android:background="@color/colorPrimaryDark"
+                    tools:text="@string/follow" />
 
             </LinearLayout>
 

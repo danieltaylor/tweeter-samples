@@ -6,14 +6,14 @@ import android.util.Log;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
-import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
-import edu.byu.cs.tweeter.presenter.RegisterPresenter;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
+import edu.byu.cs.tweeter.presenter.UserPresenter;
 import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterResponse> {
+public class UserTask extends AsyncTask<UserRequest, Void, UserResponse> {
 
-    private final RegisterPresenter presenter;
+    private final UserPresenter presenter;
     private final Observer observer;
     private Exception exception;
 
@@ -22,18 +22,18 @@ public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterRespo
      * completes.
      */
     public interface Observer {
-        void registerSuccessful(RegisterResponse registerResponse);
-        void registerUnsuccessful(RegisterResponse registerResponse);
+        void getUserSuccessful(UserResponse userResponse);
+        void getUserUnsuccessful(UserResponse userResponse);
         void handleException(Exception ex);
     }
 
     /**
      * Creates an instance.
      *
-     * @param presenter the presenter this task should use to register.
+     * @param presenter the presenter this task should use to user.
      * @param observer the observer who wants to be notified when this task completes.
      */
-    public RegisterTask(RegisterPresenter presenter, Observer observer) {
+    public UserTask(UserPresenter presenter, Observer observer) {
         if(observer == null) {
             throw new NullPointerException();
         }
@@ -43,27 +43,27 @@ public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterRespo
     }
 
     /**
-     * The method that is invoked on a background thread to log the user in. This method is
-     * invoked indirectly by calling {@link #execute(RegisterRequest...)}.
+     * The method that is invoked on a background thread to retrieve a users user info. This method is
+     * invoked indirectly by calling {@link #execute(UserRequest...)}.
      *
-     * @param registerRequests the request object (there will only be one).
+     * @param userRequests the request object (there will only be one).
      * @return the response.
      */
     @Override
-    protected RegisterResponse doInBackground(RegisterRequest... registerRequests) {
-        RegisterResponse registerResponse = null;
+    protected UserResponse doInBackground(UserRequest... userRequests) {
+        UserResponse userResponse = null;
 
         try {
-            registerResponse = presenter.register(registerRequests[0]);
+            userResponse = presenter.getUser(userRequests[0]);
 
-            if(registerResponse.isSuccess()) {
-                loadImage(registerResponse.getUser());
+            if (userResponse.isSuccess()) {
+                loadImage(userResponse.getUser());
             }
         } catch (IOException ex) {
             exception = ex;
         }
 
-        return registerResponse;
+        return userResponse;
     }
 
     /**
@@ -82,18 +82,18 @@ public class RegisterTask extends AsyncTask<RegisterRequest, Void, RegisterRespo
 
     /**
      * Notifies the observer (on the thread of the invoker of the
-     * {@link #execute(RegisterRequest...)} method) when the task completes.
+     * {@link #execute(UserRequest...)} method) when the task completes.
      *
-     * @param registerResponse the response that was received by the task.
+     * @param userResponse the response that was received by the task.
      */
     @Override
-    protected void onPostExecute(RegisterResponse registerResponse) {
+    protected void onPostExecute(UserResponse userResponse) {
         if(exception != null) {
             observer.handleException(exception);
-        } else if(registerResponse.isSuccess()) {
-            observer.registerSuccessful(registerResponse);
+        } else if(userResponse.isSuccess()) {
+            observer.getUserSuccessful(userResponse);
         } else {
-            observer.registerUnsuccessful(registerResponse);
+            observer.getUserUnsuccessful(userResponse);
         }
     }
 }

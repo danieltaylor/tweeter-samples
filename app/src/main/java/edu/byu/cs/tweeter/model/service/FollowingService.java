@@ -39,7 +39,7 @@ public class FollowingService {
      */
     private void loadImages(FollowingResponse response) throws IOException {
         for(User user : response.getFollowees()) {
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+            byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
             user.setImageBytes(bytes);
         }
     }

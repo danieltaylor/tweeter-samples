@@ -1,6 +1,7 @@
 package edu.byu.cs.tweeter.view.main.feed;
 
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -145,6 +147,12 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
             userName.setText(status.getUser().getName());
             timestamp.setText(status.getTimestamp());
             statusBody.setText(status.getBody());
+
+            Linkify.TransformFilter filter = (match, url) -> match.group();
+            Pattern mentionPattern = Pattern.compile("@([A-Za-z0-9_-]+)");
+            String mentionScheme = "tweeter://profile/?requestinguser="+ user.getAlias() + "&requesteduser=";
+            Linkify.addLinks(statusBody, Linkify.ALL);
+            Linkify.addLinks(statusBody, mentionPattern, mentionScheme, null, filter);
         }
     }
 

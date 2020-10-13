@@ -10,19 +10,29 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
+import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowersRequest;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
+import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
+import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
+import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
+import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowersResponse;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
+import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
+import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
+import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
+import edu.byu.cs.tweeter.model.service.response.UserResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -30,8 +40,8 @@ import edu.byu.cs.tweeter.model.service.response.StoryResponse;
  */
 public class ServerFacade {
     // This is the hard coded followee data returned by the 'getFollowees()' method
-    private static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
-    private static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
+    public static final String MALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
+    public static final String FEMALE_IMAGE_URL = "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png";
 
     private static final User user0 = new User("Test", "User", MALE_IMAGE_URL);
 
@@ -59,13 +69,14 @@ public class ServerFacade {
     private static final Status status1 = new Status(user0, "Just got my new tweeter account set up!", new Date(120,10,7,20,24));
     private static final Status status2 = new Status(user0, "What's up homies?", new Date(120,10,7,20,23));
 
-    private static final Status status10 = new Status(user2,  "Anyone know if Test User is on tweeter yet?", new Date(120, 10, 1 ,19, 13));
+    private static final Status status10 = new Status(user2,  "Anyone know if @HelenHopwell is on tweeter yet?", new Date(120, 10, 1 ,19, 13));
     private static final Status status11 = new Status(user7, "Covfefe", new Date(120, 9, 28, 18,26));
     private static final Status status12 = new Status(user19, "Check this out: www.crouton.net", new Date(120, 9, 20, 3, 41));
 
-    private static List<User> followees = Arrays.asList(user1, user2, user3, user4, user5, user6, user7,
+    private static List<User> allUsers = Arrays.asList(user0, user1, user2, user3, user4, user5, user6, user7,
             user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
             user19, user20);
+    private static List<User> followees = new ArrayList<>();
     private static List<User> followers = Arrays.asList(user3, user4, user5, user7,
             user8, user9, user10, user11, user12, user13, user14, user15);
     private static List<Status> story0 = new ArrayList<>();
@@ -76,6 +87,27 @@ public class ServerFacade {
         if (story0.isEmpty()) {
             story0.add(status1);
             story0.add(status2);
+        }
+        if (followees.isEmpty()) {
+            followees.add(user1);
+            followees.add(user2);
+            followees.add(user3);
+            followees.add(user4);
+            followees.add(user6);
+            followees.add(user7);
+            followees.add(user8);
+            followees.add(user9);
+            followees.add(user10);
+            followees.add(user11);
+            followees.add(user12);
+            followees.add(user13);
+            followees.add(user14);
+            followees.add(user15);
+            followees.add(user16);
+            followees.add(user17);
+            followees.add(user18);
+            followees.add(user19);
+            followees.add(user20);
         }
     }
     
@@ -90,6 +122,9 @@ public class ServerFacade {
     public RegisterResponse register(RegisterRequest request) {
         User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(),
                 request.getImageUrl());
+        if (request.getImageBytes() != null){
+            user.setImageBytes(request.getImageBytes());
+        }
         currStory = new ArrayList<>();
         return new RegisterResponse(user, new AuthToken());
     }
@@ -105,18 +140,8 @@ public class ServerFacade {
     public LoginResponse login(LoginRequest request) {
         User user = new User("Test", "User",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        currStory = story0;
         return new LoginResponse(user, new AuthToken());
-    }
-
-    /**
-     * Posts a status and if successful, returns the PostResponse.
-     *
-     * @param request contains all information needed to post a status.
-     * @return the post response.
-     */
-    public PostResponse post(PostRequest request) {
-        currStory.add(0, request.getStatus());
-        return new PostResponse();
     }
 
     /**
@@ -290,7 +315,6 @@ public class ServerFacade {
      * @return the status response.
      */
     public StoryResponse getStoryStatuses(StoryRequest request) {
-
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
@@ -329,8 +353,10 @@ public class ServerFacade {
     List<Status> getDummyStoryStatuses(User user) {
         if (user.equals(user2)){
             return Arrays.asList(status10);
+        } else if (!user.equals(user0) && allUsers.contains(user)) {
+            return new ArrayList<>();
         } else {
-            return Arrays.asList();
+            return currStory;
         }
     }
 
@@ -412,5 +438,88 @@ public class ServerFacade {
      */
     List<Status> getDummyFeedStatuses() {
         return feed;
+    }
+
+    /**
+     * Performs profile info for a user and if successful, returns the user's number of followers
+     * and followees, and if they are followed by the requesting user. The current
+     * implementation is hard-coded to return a dummy user and doesn't actually make a network
+     * request.
+     *
+     * @param request contains all information needed to request profile info.
+     * @return the profile response.
+     */
+    public ProfileResponse getProfile(ProfileRequest request) {
+        if (request.getRequestedUser().equals(request.getRequestingUser())){
+            return new ProfileResponse(followers.size(), followees.size(), false);
+        } else {
+            boolean isFollowed;
+            if (followees.contains(request.getRequestedUser())) {
+                isFollowed = true;
+            } else {
+                isFollowed = false;
+            }
+            return new ProfileResponse(34, 48, isFollowed);
+        }
+    }
+
+    public UserResponse getUser(UserRequest request) {
+        for (User user : allUsers) {
+            if (user.getAlias().equalsIgnoreCase(request.getAlias())){
+                return new UserResponse(user);
+            }
+        }
+        return new UserResponse("User not found.");
+    }
+
+    /**
+     * Posts a status and if successful, returns the PostResponse.
+     *
+     * @param request contains all information needed to post a status.
+     * @return the post response.
+     */
+    public PostResponse post(PostRequest request) {
+        currStory.add(0, request.getStatus());
+        return new PostResponse();
+    }
+
+    /**
+     * Follows a user and if successful, returns the FollowResponse.
+     *
+     * @param request contains all information needed to follow a user.
+     * @return the follow response.
+     */
+    public FollowResponse follow(FollowRequest request) {
+        if (followees.contains(request.getToBeFollowed())){
+            return new FollowResponse(request.getRequestingUser().getAlias() + " is already following " + request.getToBeFollowed().getAlias() + ".");
+        } else {
+            followees.add(0, request.getToBeFollowed());
+            return new FollowResponse();
+        }
+    }
+
+    /**
+     * Unfollows a user and if successful, returns the UnfollowResponse.
+     *
+     * @param request contains all information needed to unfollow a user.
+     * @return the unfollow response.
+     */
+    public UnfollowResponse unfollow(UnfollowRequest request) {
+        if (!followees.contains(request.getToBeUnfollowed())){
+            return new UnfollowResponse(request.getRequestingUser().getAlias() + " is not currently following " + request.getToBeUnfollowed().getAlias() + ".");
+        } else {
+            followees.remove(request.getToBeUnfollowed());
+            return new UnfollowResponse();
+        }
+    }
+
+    /**
+     * Invalidates an auth token and if successful, returns the LogoutResponse.
+     *
+     * @param request contains all information needed to logout a user.
+     * @return the logout response.
+     */
+    public LogoutResponse logout(LogoutRequest request) {
+        return new LogoutResponse();
     }
 }

@@ -98,6 +98,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
      */
     private class FollowersHolder extends RecyclerView.ViewHolder {
 
+        private User boundUser;
         private final ImageView userImage;
         private final TextView userAlias;
         private final TextView userName;
@@ -121,6 +122,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
                         Intent intent = new Intent(getActivity(), ProfileActivity.class);
                         intent.putExtra(ProfileActivity.CURRENT_USER_KEY, user);
                         intent.putExtra(ProfileActivity.AUTH_TOKEN_KEY, authToken);
+                        intent.putExtra(ProfileActivity.DISPLAYED_USER, boundUser);
                         startActivity(intent);
                     }
                 });
@@ -137,6 +139,7 @@ public class FollowersFragment extends Fragment implements FollowersPresenter.Vi
          * @param user the user.
          */
         void bindUser(User user) {
+            boundUser = user;
             userImage.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
             userAlias.setText(user.getAlias());
             userName.setText(user.getName());

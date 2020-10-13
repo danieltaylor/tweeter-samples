@@ -9,16 +9,26 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
+import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
+import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
+import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
+import edu.byu.cs.tweeter.presenter.LogoutPresenter;
+import edu.byu.cs.tweeter.presenter.ProfilePresenter;
+import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
+import edu.byu.cs.tweeter.view.asyncTasks.ProfileTask;
 import edu.byu.cs.tweeter.view.login.LoginActivity;
 import edu.byu.cs.tweeter.view.main.post.PostActivity;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
@@ -27,14 +37,23 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProfilePresenter.View, ProfileTask.Observer, LogoutPresenter.View, LogoutTask.Observer {
+
+    private static final String LOG_TAG = "MainActivity";
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
+    private ProfilePresenter profilePresenter;
+    private LogoutPresenter logoutPresenter;
+
     private User user;
     private AuthToken authToken;
     private ViewPager viewPager;
+    private TextView followeeCount;
+    private TextView followerCount;
+    private int numFollowers = 0;
+    private int numFollowees = 0;
     private int currentTab;
 
     @Override
@@ -42,13 +61,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        profilePresenter = new ProfilePresenter(this);
+        logoutPresenter = new LogoutPresenter(this);
+
         user = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
         if(user == null) {
             throw new RuntimeException("User not passed to activity");
         }
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
+        ProfileRequest profileRequest = new ProfileRequest(user, user);
+        ProfileTask profileTask = new ProfileTask(profilePresenter, MainActivity.this);
+        profileTask.execute(profileRequest);
+
+        followeeCount = findViewById(R.id.followeeCount);
+        followerCount = findViewById(R.id.followerCount);
+        this.reloadProfileInfo();
         this.reloadTabs();
+
+        TextView userName = findViewById(R.id.userName);
+        userName.setText(user.getName());
+
+        TextView userAlias = findViewById(R.id.userAlias);
+        userAlias.setText(user.getAlias());
+
+        ImageView userImageView = findViewById(R.id.userImage);
+        userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -63,21 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        TextView userName = findViewById(R.id.userName);
-        userName.setText(user.getName());
-
-        TextView userAlias = findViewById(R.id.userAlias);
-        userAlias.setText(user.getAlias());
-
-        ImageView userImageView = findViewById(R.id.userImage);
-        userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
-
-        TextView followeeCount = findViewById(R.id.followeeCount);
-        followeeCount.setText(getString(R.string.followeeCount, 42));
-
-        TextView followerCount = findViewById(R.id.followerCount);
-        followerCount.setText(getString(R.string.followerCount, 27));
     }
 
     private void reloadTabs() {
@@ -87,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setCurrentItem(currentTab);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+    }
+
+    private void reloadProfileInfo() {
+        ProfileRequest profileRequest = new ProfileRequest(user, user);
+        ProfileTask profileTask = new ProfileTask(profilePresenter, MainActivity.this);
+        profileTask.execute(profileRequest);
     }
 
     @Override
@@ -99,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.logoutMenu) {
-            //TODO send logout request to serverFacade
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            LogoutRequest logoutRequest = new LogoutRequest(authToken);
+            LogoutTask logoutTask = new LogoutTask(logoutPresenter, MainActivity.this);
+            logoutTask.execute(logoutRequest);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -119,5 +147,67 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         reloadTabs();
+        reloadProfileInfo();
+    }
+
+    private void updateFollowerCount() {
+        followerCount.setText(getString(R.string.followerCount, numFollowers));
+    }
+    private void updateFolloweeCount() {
+        followeeCount.setText(getString(R.string.followeeCount, numFollowees));
+    }
+
+    /**
+     * The callback method that gets invoked for a successful profile request. Updates the profile's number of followers and followees, and follow button.
+     *
+     * @param profileResponse the response from the profile request.
+     */
+    @Override
+    public void getProfileSuccessful(ProfileResponse profileResponse) {
+        numFollowees = profileResponse.getNumFollowees();
+        numFollowers = profileResponse.getNumFollowers();
+        updateFollowerCount();
+        updateFolloweeCount();
+    }
+
+    /**
+     * The callback method that gets invoked for an unsuccessful register. Displays a toast with a
+     * message indicating why the profile request failed.
+     *
+     * @param profileResponse the response from the profile request.
+     */
+    @Override
+    public void getProfileUnsuccessful(ProfileResponse profileResponse) {
+        Toast.makeText(this, "Failed to retrieve profile info: " + profileResponse.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void logoutSuccessful(LogoutResponse logoutResponse) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    /**
+     * The callback method that gets invoked for an unsuccessful logout. Displays a toast with a
+     * message indicating why the logout request failed.
+     *
+     * @param logoutResponse the response from the logout request.
+     */
+    @Override
+    public void logoutUnsuccessful(LogoutResponse logoutResponse) {
+        Toast.makeText(this, "Failed to logout: " + logoutResponse.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * A callback indicating that an exception was thrown in an asynchronous method called on the
+     * presenter.
+     *
+     * @param exception the exception.
+     */
+    @Override
+    public void handleException(Exception exception) {
+        Log.e(LOG_TAG, exception.getMessage(), exception);
+        Toast.makeText(this, "Failed because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

@@ -16,7 +16,7 @@ public class ByteArrayUtils {
      *
      * @param urlString the url where the bytes to be read reside.
      * @return the bytes.
-     * @throws IOException if an I/O error occurs while attempting to open the URL or read from it's
+     * @throws IOException if an I/O error occurs while attempting to open the URL or read from its
      * input stream.
      */
     public static byte [] bytesFromUrl(String urlString) throws IOException {

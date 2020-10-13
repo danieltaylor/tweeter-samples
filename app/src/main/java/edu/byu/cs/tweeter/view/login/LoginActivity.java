@@ -2,8 +2,12 @@ package edu.byu.cs.tweeter.view.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
@@ -11,14 +15,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.R;
+import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.presenter.LoginPresenter;
+import edu.byu.cs.tweeter.presenter.RegisterPresenter;
+import edu.byu.cs.tweeter.util.ByteArrayUtils;
 import edu.byu.cs.tweeter.view.asyncTasks.LoginTask;
 import edu.byu.cs.tweeter.view.asyncTasks.RegisterTask;
 import edu.byu.cs.tweeter.view.main.MainActivity;
@@ -27,18 +39,23 @@ import edu.byu.cs.tweeter.view.main.MainActivity;
  * Contains the minimum UI required to allow the user to login with a hard-coded user. Most or all
  * of this should be replaced when the back-end is implemented.
  */
-public class LoginActivity extends AppCompatActivity implements LoginPresenter.View, LoginTask.Observer, RegisterTask.Observer {
+public class LoginActivity extends AppCompatActivity implements LoginPresenter.View, LoginTask.Observer, RegisterPresenter.View, RegisterTask.Observer {
 
     private static final String LOG_TAG = "LoginActivity";
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private LoginPresenter presenter;
+    private LoginPresenter loginPresenter;
+    private RegisterPresenter registerPresenter;
+    private Toast loginInToast;
+    private byte[] imageBytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        presenter = new LoginPresenter(this);
+        loginPresenter = new LoginPresenter(this);
+        registerPresenter = new RegisterPresenter(this);
 
         EditText loginUsername = this.findViewById(R.id.loginUsername);
         loginUsername.addTextChangedListener(new TextWatcher() {
@@ -68,11 +85,12 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
              */
             @Override
             public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Logging In", Toast.LENGTH_LONG).show();
+                loginInToast = Toast.makeText(LoginActivity.this, "Logging In", Toast.LENGTH_LONG);
+                loginInToast.show();
 
                 // It doesn't matter what values we put here. We will be logged in with a hard-coded dummy user.
                 LoginRequest loginRequest = new LoginRequest(loginUsername.getText().toString(), loginPassword.getText().toString());
-                LoginTask loginTask = new LoginTask(presenter, LoginActivity.this);
+                LoginTask loginTask = new LoginTask(loginPresenter, LoginActivity.this);
                 loginTask.execute(loginRequest);
             }
         });
@@ -97,6 +115,20 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
         });
         EditText registerPassword = this.findViewById(R.id.registerPassword);
         Button registerButton = findViewById(R.id.registerButton);
+        TextView takeAPhoto = findViewById(R.id.takeAPhoto);
+        takeAPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                try {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getApplicationContext(), "Error starting camera.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
         registerButton.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -107,13 +139,19 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
              */
             @Override
             public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Registering", Toast.LENGTH_LONG).show();
-
-                // It doesn't matter what values we put here. We will be logged in with a hard-coded dummy user.
-                RegisterRequest registerRequest = new RegisterRequest(firstName.getText().toString(),
-                        lastName.getText().toString(), registerUsername.getText().toString(),
-                        registerPassword.getText().toString(), "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-                RegisterTask registerTask = new RegisterTask(presenter, LoginActivity.this);
+                loginInToast = Toast.makeText(LoginActivity.this, "Registering...", Toast.LENGTH_LONG);
+                loginInToast.cancel();
+                RegisterRequest registerRequest;
+                if (imageBytes != null) {
+                    registerRequest = new RegisterRequest(firstName.getText().toString(),
+                            lastName.getText().toString(), registerUsername.getText().toString(),
+                            registerPassword.getText().toString(), imageBytes);
+                } else {
+                    registerRequest = new RegisterRequest(firstName.getText().toString(),
+                            lastName.getText().toString(), registerUsername.getText().toString(),
+                            registerPassword.getText().toString(), ServerFacade.MALE_IMAGE_URL);
+                }
+                RegisterTask registerTask = new RegisterTask(registerPresenter, LoginActivity.this);
                 registerTask.execute(registerRequest);
             }
         });
@@ -149,7 +187,7 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
     /**
      * The callback method that gets invoked for a successful register. Displays the MainActivity.
      *
-     * @param registerResponse the response from the login request.
+     * @param registerResponse the response from the register request.
      */
     @Override
     public void registerSuccessful(RegisterResponse registerResponse) {
@@ -164,9 +202,9 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
 
     /**
      * The callback method that gets invoked for an unsuccessful register. Displays a toast with a
-     * message indicating why the login failed.
+     * message indicating why the register failed.
      *
-     * @param registerResponse the response from the login request.
+     * @param registerResponse the response from the register request.
      */
     @Override
     public void registerUnsuccessful(RegisterResponse registerResponse) {
@@ -184,4 +222,24 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenter.V
         Log.e(LOG_TAG, exception.getMessage(), exception);
         Toast.makeText(this, "Failed to login because of exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK)
+        {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+            ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+            try {
+                imageBytes = ByteArrayUtils.bytesFromInputStream(bs);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error converting image to inputstream.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 }

@@ -10,9 +10,9 @@ import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 
 /**
- * The presenter for the login functionality of the application.
+ * The presenter for the register functionality of the application.
  */
-public class LoginPresenter {
+public class RegisterPresenter {
 
     private final View view;
 
@@ -28,17 +28,17 @@ public class LoginPresenter {
      *
      * @param view the view for which this class is the presenter.
      */
-    public LoginPresenter(View view) {
+    public RegisterPresenter(View view) {
         this.view = view;
     }
 
     /**
-     * Makes a login request.
+     * Makes a register request.
      *
-     * @param loginRequest the request.
+     * @param registerRequest the request.
      */
-    public LoginResponse login(LoginRequest loginRequest) throws IOException {
-        LoginService loginService = new LoginService();
-        return loginService.login(loginRequest);
+    public RegisterResponse register(RegisterRequest registerRequest) throws IOException {
+        RegisterService registerService = new RegisterService();
+        return registerService.register(registerRequest);
     }
 }
