@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.view.profile;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,6 +85,12 @@ public class ProfileActivity extends AppCompatActivity implements ProfileInfoPre
             authToken = new AuthToken(uri.getQueryParameter("auth"));
             try {
                 user = userTask0.get().getUser();
+                if (!userTask1.get().isSuccess()) {
+                    loadingToast.cancel();
+                    Toast.makeText(this, "User " + uri.getQueryParameter("requesteduser") + " does not exist.", Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
                 displayedUser = userTask1.get().getUser();
             } catch (ExecutionException | InterruptedException e) {
                 handleException(e);
@@ -210,9 +217,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileInfoPre
     public void getUserSuccessful(UserResponse userResponse) { }
 
     @Override
-    public void getUserUnsuccessful(UserResponse userResponse) {
-        Toast.makeText(this, "Failed to get user: " + userResponse.getMessage(), Toast.LENGTH_LONG).show();
-    }
+    public void getUserUnsuccessful(UserResponse userResponse) { }
 
     @Override
     public void followSuccessful(FollowResponse followResponse) {

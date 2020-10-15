@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -32,6 +35,7 @@ public class PostActivity extends AppCompatActivity implements PostPresenter.Vie
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
     private PostPresenter presenter;
+    private Toast postToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,9 @@ public class PostActivity extends AppCompatActivity implements PostPresenter.Vie
         ImageView userImageView = findViewById(R.id.userImage);
         userImageView.setImageDrawable(ImageUtils.drawableFromByteArray(user.getImageBytes()));
 
+        TextView timestamp = findViewById(R.id.timestamp);
+        timestamp.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a")));
+
         EditText statusBody = findViewById(R.id.statusBody);
         statusBody.requestFocus();
 
@@ -70,7 +77,8 @@ public class PostActivity extends AppCompatActivity implements PostPresenter.Vie
              */
             @Override
             public void onClick(View view) {
-                Toast.makeText(PostActivity.this, "Posting...", Toast.LENGTH_SHORT).show();
+                postToast = Toast.makeText(PostActivity.this, "Posting...", Toast.LENGTH_SHORT);
+                postToast.show();
 
                 Status status = new Status(user, statusBody.getText().toString());
                 PostRequest postRequest = new PostRequest(status, authToken);
@@ -82,7 +90,7 @@ public class PostActivity extends AppCompatActivity implements PostPresenter.Vie
 
     @Override
     public void postSuccessful(PostResponse postResponse) {
-        Toast.makeText(this, "Posted!", Toast.LENGTH_LONG).show();
+        postToast.cancel();
         onBackPressed();
     }
 
