@@ -28,7 +28,7 @@ import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
-import edu.byu.cs.tweeter.presenter.ProfilePresenter;
+import edu.byu.cs.tweeter.presenter.ProfileInfoPresenter;
 import edu.byu.cs.tweeter.presenter.UnfollowPresenter;
 import edu.byu.cs.tweeter.presenter.UserPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
@@ -40,7 +40,7 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The profile activity for the application. Contains tabs for story, following, and followers.
  */
-public class ProfileActivity extends AppCompatActivity implements ProfilePresenter.View, ProfileTask.Observer, UserPresenter.View, UserTask.Observer, FollowPresenter.View, FollowTask.Observer, UnfollowPresenter.View, UnfollowTask.Observer {
+public class ProfileActivity extends AppCompatActivity implements ProfileInfoPresenter.View, ProfileTask.Observer, UserPresenter.View, UserTask.Observer, FollowPresenter.View, FollowTask.Observer, UnfollowPresenter.View, UnfollowTask.Observer {
 
     private static final String LOG_TAG = "ProfileActivity";
 
@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfilePresent
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        ProfilePresenter profilePresenter = new ProfilePresenter(this);
+        ProfileInfoPresenter profileInfoPresenter = new ProfileInfoPresenter(this);
         UserPresenter userPresenter = new UserPresenter(this);
         FollowPresenter followPresenter = new FollowPresenter(this);
         UnfollowPresenter unfollowPresenter = new UnfollowPresenter(this);
@@ -107,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfilePresent
 
 
         ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(displayedUser, user);
-        ProfileTask profileTask = new ProfileTask(profilePresenter, ProfileActivity.this);
+        ProfileTask profileTask = new ProfileTask(profileInfoPresenter, ProfileActivity.this);
         profileTask.execute(profileInfoRequest);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), displayedUser, authToken);

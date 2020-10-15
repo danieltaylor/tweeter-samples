@@ -32,11 +32,11 @@ public class UnfollowServiceTest {
         User currentUser = new User("FirstName", "LastName", null);
         AuthToken currentAuthToken = new AuthToken();
 
-        User followedUser = new User("FirstName1", "LastName1",
+        User otherUser = new User("FirstName1", "LastName1",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
         // Setup request objects to use in the tests
-        validRequest = new UnfollowRequest(currentUser, followedUser, currentAuthToken);
+        validRequest = new UnfollowRequest(currentUser, otherUser, currentAuthToken);
         invalidRequest = new UnfollowRequest(null, null, null);
 
         // Setup a mock ServerFacade that will return known responses

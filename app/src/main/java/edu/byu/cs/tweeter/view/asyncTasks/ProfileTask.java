@@ -6,11 +6,11 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
-import edu.byu.cs.tweeter.presenter.ProfilePresenter;
+import edu.byu.cs.tweeter.presenter.ProfileInfoPresenter;
 
 public class ProfileTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfoResponse> {
 
-    private final ProfilePresenter presenter;
+    private final ProfileInfoPresenter presenter;
     private final Observer observer;
     private Exception exception;
 
@@ -30,7 +30,7 @@ public class ProfileTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfo
      * @param presenter the presenter this task should use to profile.
      * @param observer the observer who wants to be notified when this task completes.
      */
-    public ProfileTask(ProfilePresenter presenter, Observer observer) {
+    public ProfileTask(ProfileInfoPresenter presenter, Observer observer) {
         if(observer == null) {
             throw new NullPointerException();
         }
@@ -51,7 +51,7 @@ public class ProfileTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfo
         ProfileInfoResponse profileInfoResponse = null;
 
         try {
-            profileInfoResponse = presenter.getProfile(profileInfoRequests[0]);
+            profileInfoResponse = presenter.getProfileInfo(profileInfoRequests[0]);
         } catch (IOException ex) {
             exception = ex;
         }

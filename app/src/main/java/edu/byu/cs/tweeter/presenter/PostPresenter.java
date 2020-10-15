@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.service.FollowService;
 import edu.byu.cs.tweeter.model.service.PostService;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
@@ -35,7 +36,18 @@ public class PostPresenter {
      * @param postRequest the request.
      */
     public PostResponse post(PostRequest postRequest) throws IOException {
-        PostService postService = new PostService();
+        PostService postService = getPostService();
         return postService.post(postRequest);
+    }
+
+    /**
+     * Returns an instance of {@link PostService}. Allows mocking of the PostService class
+     * for testing purposes. All usages of PostService should get their PostService
+     * instance from this method to allow for mocking of the instance.
+     *
+     * @return the instance.
+     */
+    PostService getPostService() {
+        return new PostService();
     }
 }

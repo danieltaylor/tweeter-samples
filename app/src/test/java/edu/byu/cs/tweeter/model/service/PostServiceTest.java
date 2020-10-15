@@ -32,8 +32,10 @@ public class PostServiceTest {
     @BeforeEach
     public void setup() {
         User currentUser = new User("FirstName", "LastName", null);
+
         AuthToken currentAuthToken = new AuthToken();
-        Status status = new Status(currentUser, "Status body.", LocalDateTime.of(2020, 3, 14, 3, 14));
+        Status status = new Status(currentUser, "Status body.",
+                LocalDateTime.of(2020, 3, 14, 3, 14));
 
         // Setup request objects to use in the tests
         validRequest = new PostRequest(status, currentAuthToken);

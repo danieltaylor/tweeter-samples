@@ -31,11 +31,15 @@ public class StoryServiceTest {
      */
     @BeforeEach
     public void setup() {
-        User currentUser = new User("FirstName", "LastName", "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User currentUser = new User("FirstName", "LastName",
+                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
-        Status resultStatus1 = new Status(currentUser, "Status body 1.", LocalDateTime.of(2020, 7, 4, 7, 20));
-        Status resultStatus2 = new Status(currentUser, "Status body 2?", LocalDateTime.of(2020, 2, 27, 11, 11));
-        Status resultStatus3 = new Status(currentUser, "Status body 3!", LocalDateTime.of(2020, 1, 8, 17, 38));
+        Status resultStatus1 = new Status(currentUser, "Status body 1.",
+                LocalDateTime.of(2020, 7, 4, 7, 20));
+        Status resultStatus2 = new Status(currentUser, "Status body 2?",
+                LocalDateTime.of(2020, 2, 27, 11, 11));
+        Status resultStatus3 = new Status(currentUser, "Status body 3!",
+                LocalDateTime.of(2020, 1, 8, 17, 38));
 
         // Setup request objects to use in the tests
         validRequest = new StoryRequest(currentUser, 3, null);

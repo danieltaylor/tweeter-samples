@@ -37,7 +37,6 @@ public class ProfileInfoServiceTest {
         int numFolloweesResult = 6;
         boolean isFollowedResult = true;
 
-
         // Setup request objects to use in the tests
         validRequest = new ProfileInfoRequest(currentUser, requestedUser);
         invalidRequest = new ProfileInfoRequest(null, null);

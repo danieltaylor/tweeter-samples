@@ -40,9 +40,12 @@ public class FeedServiceTest {
         User resultUser3 = new User("FirstName3", "LastName3",
                 "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/daisy_duck.png");
 
-        Status resultStatus1 = new Status(resultUser1, "Status body 1.", LocalDateTime.of(2020, 7, 4, 7, 20));
-        Status resultStatus2 = new Status(resultUser2, "Status body 2?", LocalDateTime.of(2020, 2, 27, 11, 11));
-        Status resultStatus3 = new Status(resultUser3, "Status body 3!", LocalDateTime.of(2020, 1, 8, 17, 38));
+        Status resultStatus1 = new Status(resultUser1, "Status body 1.",
+                LocalDateTime.of(2020, 7, 4, 7, 20));
+        Status resultStatus2 = new Status(resultUser2, "Status body 2?",
+                LocalDateTime.of(2020, 2, 27, 11, 11));
+        Status resultStatus3 = new Status(resultUser3, "Status body 3!",
+                LocalDateTime.of(2020, 1, 8, 17, 38));
 
         // Setup request objects to use in the tests
         validRequest = new FeedRequest(currentUser, 3, null);

@@ -3,6 +3,7 @@ package edu.byu.cs.tweeter.presenter;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.service.FollowService;
+import edu.byu.cs.tweeter.model.service.FollowingService;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 
@@ -35,7 +36,18 @@ public class FollowPresenter {
      * @param followRequest the request.
      */
     public FollowResponse follow(FollowRequest followRequest) throws IOException {
-        FollowService followService = new FollowService();
+        FollowService followService = getFollowService();
         return followService.follow(followRequest);
+    }
+
+    /**
+     * Returns an instance of {@link FollowService}. Allows mocking of the FollowService class
+     * for testing purposes. All usages of FollowService should get their FollowService
+     * instance from this method to allow for mocking of the instance.
+     *
+     * @return the instance.
+     */
+    FollowService getFollowService() {
+        return new FollowService();
     }
 }

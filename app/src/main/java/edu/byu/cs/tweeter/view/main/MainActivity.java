@@ -26,7 +26,7 @@ import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.presenter.LogoutPresenter;
-import edu.byu.cs.tweeter.presenter.ProfilePresenter;
+import edu.byu.cs.tweeter.presenter.ProfileInfoPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
 import edu.byu.cs.tweeter.view.asyncTasks.ProfileTask;
 import edu.byu.cs.tweeter.view.login.LoginActivity;
@@ -37,14 +37,14 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity implements ProfilePresenter.View, ProfileTask.Observer, LogoutPresenter.View, LogoutTask.Observer {
+public class MainActivity extends AppCompatActivity implements ProfileInfoPresenter.View, ProfileTask.Observer, LogoutPresenter.View, LogoutTask.Observer {
 
     private static final String LOG_TAG = "MainActivity";
 
     public static final String CURRENT_USER_KEY = "CurrentUser";
     public static final String AUTH_TOKEN_KEY = "AuthTokenKey";
 
-    private ProfilePresenter profilePresenter;
+    private ProfileInfoPresenter profileInfoPresenter;
     private LogoutPresenter logoutPresenter;
 
     private User user;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        profilePresenter = new ProfilePresenter(this);
+        profileInfoPresenter = new ProfileInfoPresenter(this);
         logoutPresenter = new LogoutPresenter(this);
 
         user = (User) getIntent().getSerializableExtra(CURRENT_USER_KEY);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
         ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
-        ProfileTask profileTask = new ProfileTask(profilePresenter, MainActivity.this);
+        ProfileTask profileTask = new ProfileTask(profileInfoPresenter, MainActivity.this);
         profileTask.execute(profileInfoRequest);
 
         followeeCount = findViewById(R.id.followeeCount);
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
 
     private void reloadProfileInfo() {
         ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
-        ProfileTask profileTask = new ProfileTask(profilePresenter, MainActivity.this);
+        ProfileTask profileTask = new ProfileTask(profileInfoPresenter, MainActivity.this);
         profileTask.execute(profileInfoRequest);
     }
 

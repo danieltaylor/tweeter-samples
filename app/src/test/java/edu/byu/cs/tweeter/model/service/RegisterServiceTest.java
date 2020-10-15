@@ -34,7 +34,8 @@ public class RegisterServiceTest {
         AuthToken resultAuthToken = new AuthToken();
 
         // Setup request objects to use in the tests
-        validRequest = new RegisterRequest("FirstName", "LastName", "@TestAlias", "password", "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        validRequest = new RegisterRequest("FirstName", "LastName", "@TestAlias", "password",
+                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
         invalidRequest = new RegisterRequest(null, null, null, null, (String) null);
 
         // Setup a mock ServerFacade that will return known responses

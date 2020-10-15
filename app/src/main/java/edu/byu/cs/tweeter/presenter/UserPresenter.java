@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.model.service.FollowService;
 import edu.byu.cs.tweeter.model.service.UserService;
 import edu.byu.cs.tweeter.model.service.RegisterService;
 import edu.byu.cs.tweeter.model.service.request.UserRequest;
@@ -38,7 +39,18 @@ public class UserPresenter {
      * @param userRequest the request.
      */
     public UserResponse getUser(UserRequest userRequest) throws IOException {
-        UserService userService = new UserService();
+        UserService userService = getUserService();
         return userService.getUser(userRequest);
+    }
+
+    /**
+     * Returns an instance of {@link UserService}. Allows mocking of the UserService class
+     * for testing purposes. All usages of UserService should get their UserService
+     * instance from this method to allow for mocking of the instance.
+     *
+     * @return the instance.
+     */
+    UserService getUserService() {
+        return new UserService();
     }
 }
