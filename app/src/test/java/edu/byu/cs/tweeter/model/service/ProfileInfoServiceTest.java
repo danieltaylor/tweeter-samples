@@ -30,8 +30,7 @@ public class ProfileInfoServiceTest {
     @BeforeEach
     public void setup() {
         User currentUser = new User("FirstName", "LastName", null);
-        User requestedUser = new User("FirstName1", "LastName1",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User requestedUser = new User("FirstName1", "LastName1", ServerFacade.MALE_IMAGE_URL);
 
         int numFollowersResult = 32;
         int numFolloweesResult = 6;

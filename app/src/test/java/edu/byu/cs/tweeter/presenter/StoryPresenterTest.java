@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.FeedService;
 import edu.byu.cs.tweeter.model.service.request.FeedRequest;
 import edu.byu.cs.tweeter.model.service.response.FeedResponse;
@@ -24,8 +25,7 @@ public class StoryPresenterTest {
 
     @BeforeEach
     public void setup() throws IOException {
-        User currentUser = new User("FirstName", "LastName",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User currentUser = new User("FirstName", "LastName", ServerFacade.MALE_IMAGE_URL);
 
         Status resultStatus1 = new Status(currentUser, "Status body 1.",
                 LocalDateTime.of(2020, 7, 4, 7, 20));

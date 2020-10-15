@@ -29,8 +29,7 @@ public class LoginServiceTest {
      */
     @BeforeEach
     public void setup() {
-        User resultUser = new User("FirstName", "LastName", "@TestAlias",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User resultUser = new User("FirstName", "LastName", "@TestAlias", ServerFacade.MALE_IMAGE_URL);
         AuthToken resultAuthToken = new AuthToken();
 
         // Setup request objects to use in the tests

@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.FollowService;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
@@ -25,8 +26,7 @@ public class FollowPresenterTest {
         User currentUser = new User("FirstName", "LastName", null);
         AuthToken currentAuthToken = new AuthToken();
 
-        User otherUser = new User("FirstName1", "LastName1",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User otherUser = new User("FirstName1", "LastName1", ServerFacade.MALE_IMAGE_URL);
 
         request = new FollowRequest(currentUser, otherUser, currentAuthToken);
         response = new FollowResponse();

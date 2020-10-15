@@ -31,8 +31,7 @@ public class Status {
 	}
 
 	public String getTimestamp() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a");
-		return formatter.format(date);
+		return date.format(DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a"));
 	}
 
 	public String getBody() {

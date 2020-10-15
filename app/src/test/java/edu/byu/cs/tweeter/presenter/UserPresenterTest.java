@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.UserService;
 import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
@@ -23,8 +24,7 @@ public class UserPresenterTest {
     public void setup() throws IOException {
         String requestAlias = "@TestAlias";
 
-        User resultUser = new User("FirstName1", "LastName1", "@TestAlias",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User resultUser = new User("FirstName1", "LastName1", "@TestAlias", ServerFacade.MALE_IMAGE_URL);
 
         request = new UserRequest(requestAlias);
         response = new UserResponse(resultUser);

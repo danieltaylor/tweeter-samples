@@ -30,8 +30,7 @@ public class UserServiceTest {
     public void setup() {
         String requestAlias = "@TestAlias";
 
-        User resultUser = new User("FirstName1", "LastName1", "@TestAlias",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User resultUser = new User("FirstName1", "LastName1", "@TestAlias", ServerFacade.MALE_IMAGE_URL);
 
         // Setup request objects to use in the tests
         validRequest = new UserRequest(requestAlias);

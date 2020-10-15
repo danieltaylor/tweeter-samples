@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.RegisterService;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
@@ -22,12 +23,10 @@ public class RegisterPresenterTest {
 
     @BeforeEach
     public void setup() throws IOException {
-        User resultUser = new User("FirstName", "LastName", "@TestAlias",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User resultUser = new User("FirstName", "LastName", "@TestAlias", ServerFacade.MALE_IMAGE_URL);
         AuthToken resultAuthToken = new AuthToken();
 
-        request = new RegisterRequest("FirstName", "LastName", "@TestAlias", "password",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        request = new RegisterRequest("FirstName", "LastName", "@TestAlias", "password", ServerFacade.MALE_IMAGE_URL);
         response = new RegisterResponse(resultUser, resultAuthToken);
 
         // Create a mock RegisterService

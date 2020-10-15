@@ -66,12 +66,17 @@ public class ServerFacade {
     private static final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private static final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
-    private static final Status status1 = new Status(user0, "Just got my new tweeter account set up!", LocalDateTime.of(120,10,7,20,24));
-    private static final Status status2 = new Status(user0, "What's up homies?", LocalDateTime.of(120,10,7,20,23));
+    private static final Status status1 = new Status(user0, "Just got my new tweeter account set up!",
+            LocalDateTime.of(120,10,7,20,24));
+    private static final Status status2 = new Status(user0, "What's up homies?",
+            LocalDateTime.of(120,10,7,20,23));
 
-    private static final Status status10 = new Status(user2,  "Anyone know if @HelenHopwell is on tweeter yet?", LocalDateTime.of(120, 10, 1 ,19, 13));
-    private static final Status status11 = new Status(user7, "Covfefe", LocalDateTime.of(120, 9, 28, 18,26));
-    private static final Status status12 = new Status(user19, "Check this out: www.crouton.net", LocalDateTime.of(120, 9, 20, 3, 41));
+    private static final Status status10 = new Status(user2,  "Anyone know if @HelenHopwell is on tweeter yet?",
+            LocalDateTime.of(120, 10, 1 ,19, 13));
+    private static final Status status11 = new Status(user7, "Covfefe",
+            LocalDateTime.of(120, 9, 28, 18,26));
+    private static final Status status12 = new Status(user19, "Check this out: www.crouton.net",
+            LocalDateTime.of(120, 9, 20, 3, 41));
 
     private static List<User> allUsers = Arrays.asList(user0, user1, user2, user3, user4, user5, user6, user7,
             user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
@@ -144,9 +149,17 @@ public class ServerFacade {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request) {
-        User user = new User("Test", "User",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
-        currStory = story0;
+        User user;
+        if (request.getAlias().equals("")) {
+            user = new User("Test", "User",
+                    ServerFacade.MALE_IMAGE_URL);
+            currStory = story0;
+        } else {
+            user = new User("Test", "User", request.getAlias(),
+                    ServerFacade.MALE_IMAGE_URL);
+            currStory = new ArrayList<>();
+        }
+
         return new LoginResponse(user, new AuthToken());
     }
 

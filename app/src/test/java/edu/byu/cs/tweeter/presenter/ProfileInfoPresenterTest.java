@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.service.ProfileInfoService;
 import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
@@ -22,8 +23,7 @@ public class ProfileInfoPresenterTest {
     @BeforeEach
     public void setup() throws IOException {
         User currentUser = new User("FirstName", "LastName", null);
-        User requestedUser = new User("FirstName1", "LastName1",
-                "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        User requestedUser = new User("FirstName1", "LastName1", ServerFacade.MALE_IMAGE_URL);
 
         int numFollowersResult = 32;
         int numFolloweesResult = 6;
