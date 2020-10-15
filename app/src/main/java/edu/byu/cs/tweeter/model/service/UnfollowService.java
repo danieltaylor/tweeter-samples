@@ -12,10 +12,7 @@ import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 public class UnfollowService {
 
     public UnfollowResponse unfollow(UnfollowRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        UnfollowResponse unfollowResponse = serverFacade.unfollow(request);
-
-        return unfollowResponse;
+        return getServerFacade().unfollow(request);
     }
 
     /**

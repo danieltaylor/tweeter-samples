@@ -58,7 +58,6 @@ public class FollowingServiceTest {
     /**
      * Verify that for successful requests the {@link FollowingService#getFollowees(FollowingRequest)}
      * method returns the same result as the {@link ServerFacade}.
-     * .
      *
      * @throws IOException if an IO error occurs.
      */

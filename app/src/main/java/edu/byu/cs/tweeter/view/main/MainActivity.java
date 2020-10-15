@@ -22,9 +22,9 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
-import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
-import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
+import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.presenter.LogoutPresenter;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
         }
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
-        ProfileRequest profileRequest = new ProfileRequest(user, user);
+        ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
         ProfileTask profileTask = new ProfileTask(profilePresenter, MainActivity.this);
-        profileTask.execute(profileRequest);
+        profileTask.execute(profileInfoRequest);
 
         followeeCount = findViewById(R.id.followeeCount);
         followerCount = findViewById(R.id.followerCount);
@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
     }
 
     private void reloadProfileInfo() {
-        ProfileRequest profileRequest = new ProfileRequest(user, user);
+        ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
         ProfileTask profileTask = new ProfileTask(profilePresenter, MainActivity.this);
-        profileTask.execute(profileRequest);
+        profileTask.execute(profileInfoRequest);
     }
 
     @Override
@@ -150,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
         reloadProfileInfo();
     }
 
+    @Override
+    public void onBackPressed() {
+        viewPager.setCurrentItem(0);
+    }
+
     private void updateFollowerCount() {
         followerCount.setText(getString(R.string.followerCount, numFollowers));
     }
@@ -160,12 +165,12 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
     /**
      * The callback method that gets invoked for a successful profile request. Updates the profile's number of followers and followees, and follow button.
      *
-     * @param profileResponse the response from the profile request.
+     * @param profileInfoResponse the response from the profile request.
      */
     @Override
-    public void getProfileSuccessful(ProfileResponse profileResponse) {
-        numFollowees = profileResponse.getNumFollowees();
-        numFollowers = profileResponse.getNumFollowers();
+    public void getProfileSuccessful(ProfileInfoResponse profileInfoResponse) {
+        numFollowees = profileInfoResponse.getNumFollowees();
+        numFollowers = profileInfoResponse.getNumFollowers();
         updateFollowerCount();
         updateFolloweeCount();
     }
@@ -174,11 +179,11 @@ public class MainActivity extends AppCompatActivity implements ProfilePresenter.
      * The callback method that gets invoked for an unsuccessful register. Displays a toast with a
      * message indicating why the profile request failed.
      *
-     * @param profileResponse the response from the profile request.
+     * @param profileInfoResponse the response from the profile request.
      */
     @Override
-    public void getProfileUnsuccessful(ProfileResponse profileResponse) {
-        Toast.makeText(this, "Failed to retrieve profile info: " + profileResponse.getMessage(), Toast.LENGTH_LONG).show();
+    public void getProfileUnsuccessful(ProfileInfoResponse profileInfoResponse) {
+        Toast.makeText(this, "Failed to retrieve profile info: " + profileInfoResponse.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     @Override

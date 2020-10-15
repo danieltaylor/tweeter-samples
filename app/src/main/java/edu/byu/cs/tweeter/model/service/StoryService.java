@@ -24,7 +24,7 @@ public class StoryService {
      * @return the statuses.
      */
     public StoryResponse getStory(StoryRequest request) throws IOException {
-        StoryResponse response = getServerFacade().getStoryStatuses(request);
+        StoryResponse response = getServerFacade().getStory(request);
 
         if(response.isSuccess()) {
             loadImages(response);

@@ -10,8 +10,8 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class PostRequest {
 
     //note that we do not include a user object in the request because it is contained within the status object
-    private final AuthToken authToken;
     private final Status status;
+    private final AuthToken authToken;
 
     /**
      * Creates an instance.

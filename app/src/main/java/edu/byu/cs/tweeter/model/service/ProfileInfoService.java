@@ -3,19 +3,16 @@ package edu.byu.cs.tweeter.model.service;
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.net.ServerFacade;
-import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
-import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
+import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 
 /**
- * Contains the business logic to support the profile operation.
+ * Contains the business logic to support the getProfileInfo operation.
  */
-public class ProfileService {
+public class ProfileInfoService {
 
-    public ProfileResponse profile(ProfileRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        ProfileResponse profileResponse = serverFacade.getProfile(request);
-
-        return profileResponse;
+    public ProfileInfoResponse getProfileInfo(ProfileInfoRequest request) throws IOException {
+        return getServerFacade().getProfileInfo(request);
     }
 
     /**

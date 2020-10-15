@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.model.service;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -24,7 +28,7 @@ public class FeedService {
      * @return the statuses.
      */
     public FeedResponse getFeed(FeedRequest request) throws IOException {
-        FeedResponse response = getServerFacade().getFeedStatuses(request);
+        FeedResponse response = getServerFacade().getFeed(request);
 
         if(response.isSuccess()) {
             loadImages(response);

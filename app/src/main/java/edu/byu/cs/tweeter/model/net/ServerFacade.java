@@ -1,8 +1,8 @@
 package edu.byu.cs.tweeter.model.net;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import edu.byu.cs.tweeter.BuildConfig;
@@ -16,7 +16,7 @@ import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.service.request.PostRequest;
-import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
@@ -28,7 +28,7 @@ import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.service.response.LoginResponse;
 import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 import edu.byu.cs.tweeter.model.service.response.PostResponse;
-import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
+import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.service.response.StoryResponse;
 import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
@@ -66,21 +66,22 @@ public class ServerFacade {
     private static final User user19 = new User("Justin", "Jones", MALE_IMAGE_URL);
     private static final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
-    private static final Status status1 = new Status(user0, "Just got my new tweeter account set up!", new Date(120,10,7,20,24));
-    private static final Status status2 = new Status(user0, "What's up homies?", new Date(120,10,7,20,23));
+    private static final Status status1 = new Status(user0, "Just got my new tweeter account set up!", LocalDateTime.of(120,10,7,20,24));
+    private static final Status status2 = new Status(user0, "What's up homies?", LocalDateTime.of(120,10,7,20,23));
 
-    private static final Status status10 = new Status(user2,  "Anyone know if @HelenHopwell is on tweeter yet?", new Date(120, 10, 1 ,19, 13));
-    private static final Status status11 = new Status(user7, "Covfefe", new Date(120, 9, 28, 18,26));
-    private static final Status status12 = new Status(user19, "Check this out: www.crouton.net", new Date(120, 9, 20, 3, 41));
+    private static final Status status10 = new Status(user2,  "Anyone know if @HelenHopwell is on tweeter yet?", LocalDateTime.of(120, 10, 1 ,19, 13));
+    private static final Status status11 = new Status(user7, "Covfefe", LocalDateTime.of(120, 9, 28, 18,26));
+    private static final Status status12 = new Status(user19, "Check this out: www.crouton.net", LocalDateTime.of(120, 9, 20, 3, 41));
 
     private static List<User> allUsers = Arrays.asList(user0, user1, user2, user3, user4, user5, user6, user7,
             user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
             user19, user20);
+    private static List<Status> allStatuses = Arrays.asList(status1, status2, status10, status11, status12);
     private static List<User> followees = new ArrayList<>();
     private static List<User> followers = Arrays.asList(user3, user4, user5, user7,
             user8, user9, user10, user11, user12, user13, user14, user15);
     private static List<Status> story0 = new ArrayList<>();
-    private static List<Status> feed = Arrays.asList(status10, status11, status12);
+    private static List<Status> feed = new ArrayList<>();
     private static List<Status> currStory;
 
     public ServerFacade(){
@@ -109,6 +110,11 @@ public class ServerFacade {
             followees.add(user19);
             followees.add(user20);
         }
+        if (feed.isEmpty()){
+            feed.add(status10);
+            feed.add(status11);
+            feed.add(status12);
+        }
     }
     
     /**
@@ -120,7 +126,7 @@ public class ServerFacade {
      * @return the register response.
      */
     public RegisterResponse register(RegisterRequest request) {
-        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(),
+        User user = new User(request.getFirstName(), request.getLastName(), request.getAlias(),
                 request.getImageUrl());
         if (request.getImageBytes() != null){
             user.setImageBytes(request.getImageBytes());
@@ -314,7 +320,7 @@ public class ServerFacade {
      *                other information required to satisfy the request.
      * @return the status response.
      */
-    public StoryResponse getStoryStatuses(StoryRequest request) {
+    public StoryResponse getStory(StoryRequest request) {
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
             if(request.getLimit() < 0) {
@@ -353,7 +359,11 @@ public class ServerFacade {
     List<Status> getDummyStoryStatuses(User user) {
         if (user.equals(user2)){
             return Arrays.asList(status10);
-        } else if (!user.equals(user0) && allUsers.contains(user)) {
+        } else if (user.equals(user7)){
+            return Arrays.asList(status11);
+        } else if (user.equals(user19)){
+            return Arrays.asList(status12);
+        }else if (!user.equals(user0) && allUsers.contains(user)) {
             return new ArrayList<>();
         } else {
             return currStory;
@@ -370,7 +380,7 @@ public class ServerFacade {
      *                other information required to satisfy the request.
      * @return the status response.
      */
-    public FeedResponse getFeedStatuses(FeedRequest request) {
+    public FeedResponse getFeed(FeedRequest request) {
 
         // Used in place of assert statements because Android does not support them
         if(BuildConfig.DEBUG) {
@@ -437,11 +447,23 @@ public class ServerFacade {
      * @return the generator.
      */
     List<Status> getDummyFeedStatuses() {
+        for (Status status : allStatuses) {
+            if (followees.contains(status.getUser()) && !feed.contains(status)){
+                feed.add(status);
+            }
+        }
+        for (Status status : feed){
+            if (!followees.contains(status.getUser())){
+                feed.remove(status);
+                break;
+            }
+        }
+
         return feed;
     }
 
     /**
-     * Performs profile info for a user and if successful, returns the user's number of followers
+     * Queries profile info for a user and if successful, returns the user's number of followers
      * and followees, and if they are followed by the requesting user. The current
      * implementation is hard-coded to return a dummy user and doesn't actually make a network
      * request.
@@ -449,9 +471,9 @@ public class ServerFacade {
      * @param request contains all information needed to request profile info.
      * @return the profile response.
      */
-    public ProfileResponse getProfile(ProfileRequest request) {
+    public ProfileInfoResponse getProfileInfo(ProfileInfoRequest request) {
         if (request.getRequestedUser().equals(request.getRequestingUser())){
-            return new ProfileResponse(followers.size(), followees.size(), false);
+            return new ProfileInfoResponse(followers.size(), followees.size(), false);
         } else {
             boolean isFollowed;
             if (followees.contains(request.getRequestedUser())) {
@@ -459,7 +481,7 @@ public class ServerFacade {
             } else {
                 isFollowed = false;
             }
-            return new ProfileResponse(34, 48, isFollowed);
+            return new ProfileInfoResponse(34, 48, isFollowed);
         }
     }
 

@@ -14,8 +14,7 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
 public class LoginService {
 
     public LoginResponse login(LoginRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        LoginResponse loginResponse = serverFacade.login(request);
+        LoginResponse loginResponse = getServerFacade().login(request);
 
         if(loginResponse.isSuccess()) {
             loadImage(loginResponse.getUser());

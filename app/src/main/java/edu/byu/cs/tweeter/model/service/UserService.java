@@ -14,10 +14,25 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
 public class UserService {
 
     public UserResponse getUser(UserRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        UserResponse userResponse = serverFacade.getUser(request);
+        UserResponse response = getServerFacade().getUser(request);
 
-        return userResponse;
+        if(response.isSuccess()) {
+            loadImages(response);
+        }
+
+        return response;
+    }
+
+
+    /**
+     * Loads the profile image data for the user included in the response.
+     *
+     * @param response the response from the user request.
+     */
+    private void loadImages(UserResponse response) throws IOException {
+        User user = response.getUser();
+        byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+        user.setImageBytes(bytes);
     }
 
     /**

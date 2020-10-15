@@ -2,7 +2,7 @@ package edu.byu.cs.tweeter.model.service.request;
 
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class ProfileRequest {
+public class ProfileInfoRequest {
 	private final User requestedUser;
 	private final User requestingUser;
 
@@ -12,7 +12,7 @@ public class ProfileRequest {
 	 * @param requestedUser the user whose profile is being requested.
 	 * @param requestingUser the user who is making the request.
 	 */
-	public ProfileRequest(User requestedUser, User requestingUser) {
+	public ProfileInfoRequest(User requestedUser, User requestingUser) {
 		this.requestedUser = requestedUser;
 		this.requestingUser = requestingUser;
 	}

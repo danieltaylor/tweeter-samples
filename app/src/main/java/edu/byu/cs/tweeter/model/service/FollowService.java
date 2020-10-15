@@ -12,10 +12,7 @@ import edu.byu.cs.tweeter.model.service.response.FollowResponse;
 public class FollowService {
 
     public FollowResponse follow(FollowRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        FollowResponse followResponse = serverFacade.follow(request);
-
-        return followResponse;
+        return getServerFacade().follow(request);
     }
 
     /**

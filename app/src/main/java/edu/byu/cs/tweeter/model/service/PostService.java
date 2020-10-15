@@ -14,8 +14,7 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
 public class PostService {
 
     public PostResponse post(PostRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        PostResponse postResponse = serverFacade.post(request);
+        PostResponse postResponse = getServerFacade().post(request);
 
         return postResponse;
     }

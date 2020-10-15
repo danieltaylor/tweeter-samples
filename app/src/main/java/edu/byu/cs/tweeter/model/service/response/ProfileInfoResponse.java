@@ -1,12 +1,11 @@
 package edu.byu.cs.tweeter.model.service.response;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 
 /**
- * A response for a {@link edu.byu.cs.tweeter.model.service.request.ProfileRequest}.
+ * A response for a {@link ProfileInfoRequest}.
  */
-public class ProfileResponse extends Response {
+public class ProfileInfoResponse extends Response {
 
     private int numFollowers;
     private int numFollowees;
@@ -17,7 +16,7 @@ public class ProfileResponse extends Response {
      *
      * @param message a message describing why the request was unsuccessful.
      */
-    public ProfileResponse(String message) {
+    public ProfileInfoResponse(String message) {
         super(false, message);
     }
 
@@ -28,7 +27,7 @@ public class ProfileResponse extends Response {
      * @param numFollowees the number of users followed by the requested user.
      * @param isFollowed true if the requested user is followed by the requesting user, else false.
      */
-    public ProfileResponse(int numFollowers, int numFollowees, boolean isFollowed) {
+    public ProfileInfoResponse(int numFollowers, int numFollowees, boolean isFollowed) {
         super(true, null);
         this.numFollowers = numFollowers;
         this.numFollowees = numFollowees;

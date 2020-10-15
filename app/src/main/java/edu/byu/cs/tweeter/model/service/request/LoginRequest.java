@@ -5,17 +5,17 @@ package edu.byu.cs.tweeter.model.service.request;
  */
 public class LoginRequest {
 
-    private final String username;
+    private final String alias;
     private final String password;
 
     /**
      * Creates an instance.
      *
-     * @param username the username of the user to be logged in.
+     * @param alias the username of the user to be logged in.
      * @param password the password of the user to be logged in.
      */
-    public LoginRequest(String username, String password) {
-        this.username = username;
+    public LoginRequest(String alias, String password) {
+        this.alias = alias;
         this.password = password;
     }
 
@@ -24,8 +24,8 @@ public class LoginRequest {
      *
      * @return the username.
      */
-    public String getUsername() {
-        return username;
+    public String getAlias() {
+        return alias;
     }
 
     /**

@@ -20,11 +20,11 @@ import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.service.request.UserRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowResponse;
-import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
+import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.model.service.response.UnfollowResponse;
 import edu.byu.cs.tweeter.model.service.response.UserResponse;
 import edu.byu.cs.tweeter.presenter.FollowPresenter;
@@ -106,9 +106,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfilePresent
 
 
 
-        ProfileRequest profileRequest = new ProfileRequest(displayedUser, user);
+        ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(displayedUser, user);
         ProfileTask profileTask = new ProfileTask(profilePresenter, ProfileActivity.this);
-        profileTask.execute(profileRequest);
+        profileTask.execute(profileInfoRequest);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), displayedUser, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -179,16 +179,16 @@ public class ProfileActivity extends AppCompatActivity implements ProfilePresent
     /**
      * The callback method that gets invoked for a successful profile request. Updates the profile's number of followers and followees, and follow button.
      *
-     * @param profileResponse the response from the profile request.
+     * @param profileInfoResponse the response from the profile request.
      */
     @Override
-    public void getProfileSuccessful(ProfileResponse profileResponse) {
-        numFollowees = profileResponse.getNumFollowees();
-        numFollowers = profileResponse.getNumFollowers();
+    public void getProfileSuccessful(ProfileInfoResponse profileInfoResponse) {
+        numFollowees = profileInfoResponse.getNumFollowees();
+        numFollowers = profileInfoResponse.getNumFollowers();
         updateFollowerCount();
         updateFolloweeCount();
 
-        if (profileResponse.isFollowed()) {
+        if (profileInfoResponse.isFollowed()) {
             setButtonFollowing();
         } else {
             setButtonNotFollowing();
@@ -199,11 +199,11 @@ public class ProfileActivity extends AppCompatActivity implements ProfilePresent
      * The callback method that gets invoked for an unsuccessful register. Displays a toast with a
      * message indicating why the profile request failed.
      *
-     * @param profileResponse the response from the profile request.
+     * @param profileInfoResponse the response from the profile request.
      */
     @Override
-    public void getProfileUnsuccessful(ProfileResponse profileResponse) {
-        Toast.makeText(this, "Failed to retrieve profile info: " + profileResponse.getMessage(), Toast.LENGTH_LONG).show();
+    public void getProfileUnsuccessful(ProfileInfoResponse profileInfoResponse) {
+        Toast.makeText(this, "Failed to retrieve profile info: " + profileInfoResponse.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     @Override

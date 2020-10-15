@@ -12,8 +12,7 @@ import edu.byu.cs.tweeter.model.service.response.LogoutResponse;
 public class LogoutService {
 
     public LogoutResponse logout(LogoutRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        LogoutResponse logoutResponse = serverFacade.logout(request);
+        LogoutResponse logoutResponse = getServerFacade().logout(request);
 
         return logoutResponse;
     }

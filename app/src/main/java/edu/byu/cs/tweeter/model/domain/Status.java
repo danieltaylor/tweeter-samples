@@ -1,14 +1,20 @@
 package edu.byu.cs.tweeter.model.domain;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Status {
 	private final User user;
-	private final Date date;
+	private final LocalDateTime date;
 	private final String body;
 
-	public Status(User user, String body, Date date) {
+	public Status(User user, String body, LocalDateTime date) {
 		this.user = user;
 		this.date = date;
 		this.body = body;
@@ -17,7 +23,7 @@ public class Status {
 	public Status(User user, String body) {
 		this.user = user;
 		this.body = body;
-		this.date = new Date();
+		this.date = LocalDateTime.now();
 	}
 
 	public User getUser() {
@@ -25,8 +31,8 @@ public class Status {
 	}
 
 	public String getTimestamp() {
-		SimpleDateFormat df = new SimpleDateFormat ("d MMM yyyy HH:mm a");
-		return df.format(date);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a");
+		return formatter.format(date);
 	}
 
 	public String getBody() {

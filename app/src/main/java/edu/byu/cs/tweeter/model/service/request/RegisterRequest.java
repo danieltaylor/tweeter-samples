@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.model.service.request;
 
-import android.graphics.Bitmap;
-
 /**
  * Contains all the information needed to make a login request.
  */
@@ -9,7 +7,7 @@ public class RegisterRequest {
 
     private final String firstName;
     private final String lastName;
-    private final String username;
+    private final String alias;
     private final String password;
     private final String imageUrl;
     private final byte[] imageBytes;
@@ -19,14 +17,14 @@ public class RegisterRequest {
      *
      * @param firstName the first name of the user to be registered.
      * @param lastName the last name of the user to be registered.
-     * @param username the username of the user to be registered.
+     * @param alias the username of the user to be registered.
      * @param password the password of the user to be registered.
      * @param imageUrl url of the profile picture of the user to be registered.
      */
-    public RegisterRequest(String firstName, String lastName, String username, String password, String imageUrl) {
+    public RegisterRequest(String firstName, String lastName, String alias, String password, String imageUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
+        this.alias = alias;
         this.password = password;
         this.imageUrl = imageUrl;
         imageBytes = null;
@@ -37,14 +35,14 @@ public class RegisterRequest {
      *
      * @param firstName the first name of the user to be registered.
      * @param lastName the last name of the user to be registered.
-     * @param username the username of the user to be registered.
+     * @param alias the username of the user to be registered.
      * @param password the password of the user to be registered.
      * @param imageBytes url of the profile picture of the user to be registered.
      */
-    public RegisterRequest(String firstName, String lastName, String username, String password, byte[] imageBytes) {
+    public RegisterRequest(String firstName, String lastName, String alias, String password, byte[] imageBytes) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
+        this.alias = alias;
         this.password = password;
         this.imageBytes = imageBytes;
         imageUrl = null;
@@ -73,8 +71,8 @@ public class RegisterRequest {
      *
      * @return the username.
      */
-    public String getUsername() {
-        return username;
+    public String getAlias() {
+        return alias;
     }
 
     /**

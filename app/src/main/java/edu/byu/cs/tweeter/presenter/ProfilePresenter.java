@@ -2,12 +2,9 @@ package edu.byu.cs.tweeter.presenter;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.service.ProfileService;
-import edu.byu.cs.tweeter.model.service.RegisterService;
-import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
-import edu.byu.cs.tweeter.model.service.request.RegisterRequest;
-import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
-import edu.byu.cs.tweeter.model.service.response.RegisterResponse;
+import edu.byu.cs.tweeter.model.service.ProfileInfoService;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
+import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 
 /**
  * The presenter for the profile functionality of the application.
@@ -35,10 +32,10 @@ public class ProfilePresenter {
     /**
      * Makes a profile request.
      *
-     * @param profileRequest the request.
+     * @param profileInfoRequest the request.
      */
-    public ProfileResponse getProfile(ProfileRequest profileRequest) throws IOException {
-        ProfileService profileService = new ProfileService();
-        return profileService.profile(profileRequest);
+    public ProfileInfoResponse getProfile(ProfileInfoRequest profileInfoRequest) throws IOException {
+        ProfileInfoService profileInfoService = new ProfileInfoService();
+        return profileInfoService.getProfileInfo(profileInfoRequest);
     }
 }

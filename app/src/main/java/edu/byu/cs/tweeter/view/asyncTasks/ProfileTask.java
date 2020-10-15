@@ -1,17 +1,14 @@
 package edu.byu.cs.tweeter.view.asyncTasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.service.request.ProfileRequest;
-import edu.byu.cs.tweeter.model.service.response.ProfileResponse;
+import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
+import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.presenter.ProfilePresenter;
-import edu.byu.cs.tweeter.util.ByteArrayUtils;
 
-public class ProfileTask extends AsyncTask<ProfileRequest, Void, ProfileResponse> {
+public class ProfileTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfoResponse> {
 
     private final ProfilePresenter presenter;
     private final Observer observer;
@@ -22,8 +19,8 @@ public class ProfileTask extends AsyncTask<ProfileRequest, Void, ProfileResponse
      * completes.
      */
     public interface Observer {
-        void getProfileSuccessful(ProfileResponse profileResponse);
-        void getProfileUnsuccessful(ProfileResponse profileResponse);
+        void getProfileSuccessful(ProfileInfoResponse profileInfoResponse);
+        void getProfileUnsuccessful(ProfileInfoResponse profileInfoResponse);
         void handleException(Exception ex);
     }
 
@@ -44,38 +41,38 @@ public class ProfileTask extends AsyncTask<ProfileRequest, Void, ProfileResponse
 
     /**
      * The method that is invoked on a background thread to retrieve a users profile info. This method is
-     * invoked indirectly by calling {@link #execute(ProfileRequest...)}.
+     * invoked indirectly by calling {@link #execute(ProfileInfoRequest...)}.
      *
-     * @param profileRequests the request object (there will only be one).
+     * @param profileInfoRequests the request object (there will only be one).
      * @return the response.
      */
     @Override
-    protected ProfileResponse doInBackground(ProfileRequest... profileRequests) {
-        ProfileResponse profileResponse = null;
+    protected ProfileInfoResponse doInBackground(ProfileInfoRequest... profileInfoRequests) {
+        ProfileInfoResponse profileInfoResponse = null;
 
         try {
-            profileResponse = presenter.getProfile(profileRequests[0]);
+            profileInfoResponse = presenter.getProfile(profileInfoRequests[0]);
         } catch (IOException ex) {
             exception = ex;
         }
 
-        return profileResponse;
+        return profileInfoResponse;
     }
 
     /**
      * Notifies the observer (on the thread of the invoker of the
-     * {@link #execute(ProfileRequest...)} method) when the task completes.
+     * {@link #execute(ProfileInfoRequest...)} method) when the task completes.
      *
-     * @param profileResponse the response that was received by the task.
+     * @param profileInfoResponse the response that was received by the task.
      */
     @Override
-    protected void onPostExecute(ProfileResponse profileResponse) {
+    protected void onPostExecute(ProfileInfoResponse profileInfoResponse) {
         if(exception != null) {
             observer.handleException(exception);
-        } else if(profileResponse.isSuccess()) {
-            observer.getProfileSuccessful(profileResponse);
+        } else if(profileInfoResponse.isSuccess()) {
+            observer.getProfileSuccessful(profileInfoResponse);
         } else {
-            observer.getProfileUnsuccessful(profileResponse);
+            observer.getProfileUnsuccessful(profileInfoResponse);
         }
     }
 }

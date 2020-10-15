@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.view.main.story;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -12,12 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -319,7 +322,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
          * loading footer view) at the bottom of the list.
          */
         private void addLoadingFooter() {
-            addItem(new Status(new User("Dummy", "User", ""), "", new Date()));
+            addItem(new Status(new User("Dummy", "User", ""), "", LocalDateTime.now()));
         }
 
         /**

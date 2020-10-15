@@ -26,16 +26,6 @@ public class PostResponse extends Response {
     }
 
     /**
-     * Creates a response indicating that the corresponding request was successful.
-     *
-     * @param status the now posted status.
-     */
-    public PostResponse(Status status) {
-        super(true, null);
-        this.status = status;
-    }
-
-    /**
      * Returns the posted status.
      *
      * @return the status.

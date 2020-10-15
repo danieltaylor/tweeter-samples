@@ -14,8 +14,7 @@ import edu.byu.cs.tweeter.util.ByteArrayUtils;
 public class RegisterService {
 
     public RegisterResponse register(RegisterRequest request) throws IOException {
-        ServerFacade serverFacade = getServerFacade();
-        RegisterResponse registerResponse = serverFacade.register(request);
+        RegisterResponse registerResponse = getServerFacade().register(request);
 
         if(registerResponse.isSuccess()) {
             loadImage(registerResponse.getUser());

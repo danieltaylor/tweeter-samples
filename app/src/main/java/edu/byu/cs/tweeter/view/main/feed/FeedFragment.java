@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.view.main.feed;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -17,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -318,7 +319,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
          * loading footer view) at the bottom of the list.
          */
         private void addLoadingFooter() {
-            addItem(new Status(new User("Dummy", "User", ""), "", new Date()));
+            addItem(new Status(new User("Dummy", "User", ""), "", LocalDateTime.now()));
         }
 
         /**
