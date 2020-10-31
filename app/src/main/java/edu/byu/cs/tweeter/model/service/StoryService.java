@@ -26,7 +26,7 @@ public class StoryService {
     public StoryResponse getStory(StoryRequest request) throws IOException {
         StoryResponse response = getServerFacade().getStory(request);
 
-        if(response.isSuccess()) {
+        if (response.isSuccess()) {
             loadImages(response);
         }
 
@@ -41,8 +41,10 @@ public class StoryService {
     private void loadImages(StoryResponse response) throws IOException {
         for(Status status : response.getStatuses()) {
             User user = status.getUser();
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
+            if (user.getImageBytes() == null) {
+                byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+                user.setImageBytes(bytes);
+            }
         }
     }
 

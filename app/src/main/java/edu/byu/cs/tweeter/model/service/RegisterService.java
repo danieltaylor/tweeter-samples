@@ -17,7 +17,7 @@ public class RegisterService {
         RegisterResponse registerResponse = getServerFacade().register(request);
 
         if(registerResponse.isSuccess()) {
-            loadImage(registerResponse.getUser());
+            loadImage(registerResponse);
         }
 
         return registerResponse;
@@ -26,9 +26,10 @@ public class RegisterService {
     /**
      * Loads the profile image data for the user.
      *
-     * @param user the user whose profile image data is to be loaded.
+     * @param response the register response for the user whose profile image data is to be loaded.
      */
-    private void loadImage(User user) throws IOException {
+    private void loadImage(RegisterResponse response) throws IOException {
+        User user = response.getUser();
         if (user.getImageBytes() == null) {
             byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
             user.setImageBytes(bytes);

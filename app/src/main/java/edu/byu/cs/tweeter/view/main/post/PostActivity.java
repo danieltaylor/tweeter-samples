@@ -68,10 +68,8 @@ public class PostActivity extends AppCompatActivity implements PostPresenter.Vie
 
         Button postButton = findViewById(R.id.postButton);
         postButton.setOnClickListener(new View.OnClickListener() {
-
             /**
-             * Makes a login request. The user is hard-coded, so it doesn't matter what data we put
-             * in the LoginRequest object.
+             * Makes a post request.
              *
              * @param view the view object that was clicked.
              */
@@ -84,6 +82,19 @@ public class PostActivity extends AppCompatActivity implements PostPresenter.Vie
                 PostRequest postRequest = new PostRequest(status, authToken);
                 PostTask postTask = new PostTask(presenter, PostActivity.this);
                 postTask.execute(postRequest);
+            }
+        });
+
+        Button cancelButton = findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Cancels the post activity.
+             *
+             * @param view the view object that was clicked.
+             */
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }

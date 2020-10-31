@@ -16,7 +16,7 @@ public class UserService {
     public UserResponse getUser(UserRequest request) throws IOException {
         UserResponse response = getServerFacade().getUser(request);
 
-        if(response.isSuccess()) {
+        if (response.isSuccess()) {
             loadImages(response);
         }
 
@@ -31,8 +31,10 @@ public class UserService {
      */
     private void loadImages(UserResponse response) throws IOException {
         User user = response.getUser();
-        byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-        user.setImageBytes(bytes);
+        if (user.getImageBytes() == null) {
+            byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+            user.setImageBytes(bytes);
+        }
     }
 
     /**

@@ -44,10 +44,8 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
             return StoryFragment.newInstance(user, authToken);
         } else if (position == FOLLOWING_FRAGMENT_POSITION) {
             return FollowingFragment.newInstance(user, authToken);
-        }  else if (position == FOLLOWERS_FRAGMENT_POSITION){
+        }  else { //(position == FOLLOWERS_FRAGMENT_POSITION)
             return FollowersFragment.newInstance(user, authToken);
-        } else {
-            return PlaceholderFragment.newInstance(position + 1);
         }
     }
 

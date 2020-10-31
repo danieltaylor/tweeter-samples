@@ -1,6 +1,5 @@
 package edu.byu.cs.tweeter.view.profile;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +32,7 @@ import edu.byu.cs.tweeter.presenter.ProfileInfoPresenter;
 import edu.byu.cs.tweeter.presenter.UnfollowPresenter;
 import edu.byu.cs.tweeter.presenter.UserPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.FollowTask;
-import edu.byu.cs.tweeter.view.asyncTasks.ProfileTask;
+import edu.byu.cs.tweeter.view.asyncTasks.GetProfileInfoTask;
 import edu.byu.cs.tweeter.view.asyncTasks.UnfollowTask;
 import edu.byu.cs.tweeter.view.asyncTasks.UserTask;
 import edu.byu.cs.tweeter.view.util.ImageUtils;
@@ -41,7 +40,7 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The profile activity for the application. Contains tabs for story, following, and followers.
  */
-public class ProfileActivity extends AppCompatActivity implements ProfileInfoPresenter.View, ProfileTask.Observer, UserPresenter.View, UserTask.Observer, FollowPresenter.View, FollowTask.Observer, UnfollowPresenter.View, UnfollowTask.Observer {
+public class ProfileActivity extends AppCompatActivity implements ProfileInfoPresenter.View, GetProfileInfoTask.Observer, UserPresenter.View, UserTask.Observer, FollowPresenter.View, FollowTask.Observer, UnfollowPresenter.View, UnfollowTask.Observer {
 
     private static final String LOG_TAG = "ProfileActivity";
 
@@ -114,8 +113,8 @@ public class ProfileActivity extends AppCompatActivity implements ProfileInfoPre
 
 
         ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(displayedUser, user);
-        ProfileTask profileTask = new ProfileTask(profileInfoPresenter, ProfileActivity.this);
-        profileTask.execute(profileInfoRequest);
+        GetProfileInfoTask getProfileInfoTask = new GetProfileInfoTask(profileInfoPresenter, ProfileActivity.this);
+        getProfileInfoTask.execute(profileInfoRequest);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager(), displayedUser, authToken);
         ViewPager viewPager = findViewById(R.id.view_pager);

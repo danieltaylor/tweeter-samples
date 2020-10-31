@@ -34,7 +34,13 @@ public class Status {
 		return date.format(DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a"));
 	}
 
+	public LocalDateTime getDate() {
+		return date;
+	}
+
 	public String getBody() {
 		return body;
 	}
+
+
 }

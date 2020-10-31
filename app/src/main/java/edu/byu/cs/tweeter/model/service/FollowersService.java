@@ -39,8 +39,10 @@ public class FollowersService {
      */
     private void loadImages(FollowersResponse response) throws IOException {
         for(User user : response.getFollowers()) {
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
+            if (user.getImageBytes() == null) {
+                byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+                user.setImageBytes(bytes);
+            }
         }
     }
 

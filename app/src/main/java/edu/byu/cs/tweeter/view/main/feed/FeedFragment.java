@@ -121,13 +121,6 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
                 userName = itemView.findViewById(R.id.userName);
                 timestamp = itemView.findViewById(R.id.timestamp);
                 statusBody = itemView.findViewById(R.id.statusBody);
-
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
-                    }
-                });
             } else {
                 userImage = null;
                 userAlias = null;
@@ -151,7 +144,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
 
             Linkify.TransformFilter filter = (match, url) -> match.group();
             Pattern mentionPattern = Pattern.compile("@([A-Za-z0-9_-]+)");
-            String mentionScheme = "tweeter://profile/?requestinguser="+ user.getAlias() + "&requesteduser=";
+            String mentionScheme = "tweeter://profile/?auth=" + authToken + "&requestinguser="+ user.getAlias() + "&requesteduser=";
             Linkify.addLinks(statusBody, Linkify.ALL);
             Linkify.addLinks(statusBody, mentionPattern, mentionScheme, null, filter);
         }

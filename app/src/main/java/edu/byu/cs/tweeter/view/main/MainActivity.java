@@ -28,7 +28,7 @@ import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.presenter.LogoutPresenter;
 import edu.byu.cs.tweeter.presenter.ProfileInfoPresenter;
 import edu.byu.cs.tweeter.view.asyncTasks.LogoutTask;
-import edu.byu.cs.tweeter.view.asyncTasks.ProfileTask;
+import edu.byu.cs.tweeter.view.asyncTasks.GetProfileInfoTask;
 import edu.byu.cs.tweeter.view.login.LoginActivity;
 import edu.byu.cs.tweeter.view.main.post.PostActivity;
 import edu.byu.cs.tweeter.view.profile.ProfileActivity;
@@ -37,7 +37,7 @@ import edu.byu.cs.tweeter.view.util.ImageUtils;
 /**
  * The main activity for the application. Contains tabs for feed, story, following, and followers.
  */
-public class MainActivity extends AppCompatActivity implements ProfileInfoPresenter.View, ProfileTask.Observer, LogoutPresenter.View, LogoutTask.Observer {
+public class MainActivity extends AppCompatActivity implements ProfileInfoPresenter.View, GetProfileInfoTask.Observer, LogoutPresenter.View, LogoutTask.Observer {
 
     private static final String LOG_TAG = "MainActivity";
 
@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements ProfileInfoPresen
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
         ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
-        ProfileTask profileTask = new ProfileTask(profileInfoPresenter, MainActivity.this);
-        profileTask.execute(profileInfoRequest);
+        GetProfileInfoTask getProfileInfoTask = new GetProfileInfoTask(profileInfoPresenter, MainActivity.this);
+        getProfileInfoTask.execute(profileInfoRequest);
 
         followeeCount = findViewById(R.id.followeeCount);
         followerCount = findViewById(R.id.followerCount);
@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements ProfileInfoPresen
 
     private void reloadProfileInfo() {
         ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
-        ProfileTask profileTask = new ProfileTask(profileInfoPresenter, MainActivity.this);
-        profileTask.execute(profileInfoRequest);
+        GetProfileInfoTask getProfileInfoTask = new GetProfileInfoTask(profileInfoPresenter, MainActivity.this);
+        getProfileInfoTask.execute(profileInfoRequest);
     }
 
     @Override

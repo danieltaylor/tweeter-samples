@@ -8,7 +8,7 @@ import edu.byu.cs.tweeter.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.presenter.ProfileInfoPresenter;
 
-public class ProfileTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfoResponse> {
+public class GetProfileInfoTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfoResponse> {
 
     private final ProfileInfoPresenter presenter;
     private final Observer observer;
@@ -30,7 +30,7 @@ public class ProfileTask extends AsyncTask<ProfileInfoRequest, Void, ProfileInfo
      * @param presenter the presenter this task should use to profile.
      * @param observer the observer who wants to be notified when this task completes.
      */
-    public ProfileTask(ProfileInfoPresenter presenter, Observer observer) {
+    public GetProfileInfoTask(ProfileInfoPresenter presenter, Observer observer) {
         if(observer == null) {
             throw new NullPointerException();
         }

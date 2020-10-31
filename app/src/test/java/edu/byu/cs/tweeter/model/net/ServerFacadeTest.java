@@ -11,10 +11,10 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.service.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.service.request.LoginRequest;
 import edu.byu.cs.tweeter.model.service.response.FollowingResponse;
 
 class ServerFacadeTest {
-
     private final User user1 = new User("Daffy", "Duck", "");
     private final User user2 = new User("Fred", "Flintstone", "");
     private final User user3 = new User("Barney", "Rubble", "");

@@ -73,8 +73,10 @@ public class UserTask extends AsyncTask<UserRequest, Void, UserResponse> {
      */
     private void loadImage(User user) {
         try {
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
+            if (user.getImageBytes() == null) {
+                byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+                user.setImageBytes(bytes);
+            }
         } catch (IOException e) {
             Log.e(this.getClass().getName(), e.toString(), e);
         }

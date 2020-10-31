@@ -124,13 +124,6 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
                 userName = itemView.findViewById(R.id.userName);
                 timestamp = itemView.findViewById(R.id.timestamp);
                 statusBody = itemView.findViewById(R.id.statusBody);
-
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(), "You selected '" + userName.getText() + "'.", Toast.LENGTH_SHORT).show();
-                    }
-                });
             } else {
                 userImage = null;
                 userAlias = null;

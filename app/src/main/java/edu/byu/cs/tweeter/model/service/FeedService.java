@@ -45,8 +45,10 @@ public class FeedService {
     private void loadImages(FeedResponse response) throws IOException {
         for(Status status : response.getStatuses()) {
             User user = status.getUser();
-            byte [] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
-            user.setImageBytes(bytes);
+            if (user.getImageBytes() == null) {
+                byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
+                user.setImageBytes(bytes);
+            }
         }
     }
 

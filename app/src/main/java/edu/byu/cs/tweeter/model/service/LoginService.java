@@ -17,7 +17,7 @@ public class LoginService {
         LoginResponse loginResponse = getServerFacade().login(request);
 
         if(loginResponse.isSuccess()) {
-            loadImage(loginResponse.getUser());
+            loadImage(loginResponse);
         }
 
         return loginResponse;
@@ -26,9 +26,10 @@ public class LoginService {
     /**
      * Loads the profile image data for the user.
      *
-     * @param user the user whose profile image data is to be loaded.
+     * @param response the login response for the user whose profile image data is to be loaded.
      */
-    private void loadImage(User user) throws IOException {
+    private void loadImage(LoginResponse response) throws IOException {
+        User user = response.getUser();
         if (user.getImageBytes() == null) {
             byte[] bytes = ByteArrayUtils.bytesFromUrl(user.getImageUrl());
             user.setImageBytes(bytes);

@@ -1,8 +1,11 @@
 package edu.byu.cs.tweeter.model.net;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.byu.cs.tweeter.BuildConfig;
@@ -67,32 +70,81 @@ public class ServerFacade {
     private static final User user20 = new User("Jill", "Johnson", FEMALE_IMAGE_URL);
 
     private static final Status status1 = new Status(user0, "Just got my new tweeter account set up!",
-            LocalDateTime.of(120,10,7,20,24));
+            LocalDateTime.of(2020,10,7,20,24));
     private static final Status status2 = new Status(user0, "What's up homies?",
-            LocalDateTime.of(120,10,7,20,23));
+            LocalDateTime.of(2020,10,7,20,23));
+    private static final Status status3 = new Status(user0, "5",
+            LocalDateTime.of(2020,10,7,20,22));
+    private static final Status status4 = new Status(user0, "4",
+            LocalDateTime.of(2020,10,7,19,22));
+    private static final Status status5 = new Status(user0, "3",
+            LocalDateTime.of(2020,10,7,19,22));
+    private static final Status status6 = new Status(user0, "2",
+            LocalDateTime.of(2020,10,7,19,22));
+    private static final Status status7 = new Status(user0, "1",
+            LocalDateTime.of(2020,10,7,19,21));
+    private static final Status status8 = new Status(user0, "I can count to 5!",
+            LocalDateTime.of(2020,10,7,19,21));
+    private static final Status status9 = new Status(user0, "I'm not sure how this whole thing works",
+            LocalDateTime.of(2020,10,7,19,20));
 
     private static final Status status10 = new Status(user2,  "Anyone know if @HelenHopwell is on tweeter yet?",
-            LocalDateTime.of(120, 10, 1 ,19, 13));
+            LocalDateTime.of(2020, 10, 1 ,19, 13));
     private static final Status status11 = new Status(user7, "Covfefe",
-            LocalDateTime.of(120, 9, 28, 18,26));
+            LocalDateTime.of(2020, 9, 28, 18,26));
     private static final Status status12 = new Status(user19, "Check this out: www.crouton.net",
-            LocalDateTime.of(120, 9, 20, 3, 41));
+            LocalDateTime.of(2020, 9, 20, 3, 41));
+    private static final Status status13 = new Status(user1, "Has anyone ever heard of twitter.com?  I think it's a tweeter knock off.",
+            LocalDateTime.of(2020, 9, 15, 19, 30));
+    private static final Status status14 = new Status(user20, "I can't seem to find @realDonaldDuck on tweeter!",
+            LocalDateTime.of(2020, 9, 13, 1, 12));
+    private static final Status status15 = new Status(user5, "Got lost in the grocery store again today.",
+            LocalDateTime.of(2020, 8, 28, 14, 58));
+    private static final Status status16 = new Status(user1, "I should have joined tweeter a long time ago",
+            LocalDateTime.of(2020, 8, 27, 18, 37));
+    private static final Status status17 = new Status(user3, "Are @IgorIsaacson and @IsabelIsaacson related?",
+            LocalDateTime.of(2020, 8, 20, 10, 40));
+    private static final Status status18 = new Status(user8, "I think my account was hacked yesterday",
+            LocalDateTime.of(2020, 8, 18, 14, 22));
+    private static final Status status19 = new Status(user8, "DM ME FOR FREE RAYBANS",
+            LocalDateTime.of(2020, 8, 17, 6, 3));
+    private static final Status status20 = new Status(user9, "new tweeter who dis lol",
+            LocalDateTime.of(2020, 8, 15, 12, 32));
+    private static final Status status21 = new Status(user19, "test post please ignore",
+            LocalDateTime.of(2020, 8, 13, 15, 29));
+    private static final Status status22 = new Status(user8, "I'm just posting so my followers feeds aren't empty.",
+            LocalDateTime.of(2020, 8, 10, 17, 39));
+    private static final Status status23 = new Status(user16, "Loving the new tweeter update 😘",
+            LocalDateTime.of(2020, 8, 10, 17, 39));
+    private static final Status status24 = new Status(user4, "first",
+            LocalDateTime.of(2020, 6, 5, 6, 32));
 
     private static List<User> allUsers = Arrays.asList(user0, user1, user2, user3, user4, user5, user6, user7,
             user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18,
             user19, user20);
-    private static List<Status> allStatuses = Arrays.asList(status1, status2, status10, status11, status12);
+    private static List<Status> allStatuses = Arrays.asList(status1, status2, status3, status4, status5,
+            status6, status7, status8, status9, status10, status11, status12, status13, status14, status15,
+            status16, status17, status18, status19, status20, status21, status22, status23, status24);
     private static List<User> followees = new ArrayList<>();
-    private static List<User> followers = Arrays.asList(user3, user4, user5, user7,
-            user8, user9, user10, user11, user12, user13, user14, user15);
+    private static List<User> followers = new ArrayList<>();
     private static List<Status> story0 = new ArrayList<>();
     private static List<Status> feed = new ArrayList<>();
     private static List<Status> currStory;
+    private static List<User> currFollowees;
+    private static List<User> currFollowers;
+    private static User currUser;
 
     public ServerFacade(){
         if (story0.isEmpty()) {
             story0.add(status1);
             story0.add(status2);
+            story0.add(status3);
+            story0.add(status4);
+            story0.add(status5);
+            story0.add(status6);
+            story0.add(status7);
+            story0.add(status8);
+            story0.add(status9);
         }
         if (followees.isEmpty()) {
             followees.add(user1);
@@ -115,11 +167,25 @@ public class ServerFacade {
             followees.add(user19);
             followees.add(user20);
         }
-        if (feed.isEmpty()){
-            feed.add(status10);
-            feed.add(status11);
-            feed.add(status12);
+        if (followers.isEmpty()){
+            followers.add(user3);
+            followers.add(user4);
+            followers.add(user5);
+            followers.add(user7);
+            followers.add(user8);
+            followers.add(user9);
+            followers.add(user10);
+            followers.add(user11);
+            followers.add(user12);
+            followers.add(user13);
+            followers.add(user14);
+            followers.add(user15);
         }
+//        if (feed.isEmpty()){
+//            feed.add(status10);
+//            feed.add(status11);
+//            feed.add(status12);
+//        }
     }
     
     /**
@@ -137,6 +203,10 @@ public class ServerFacade {
             user.setImageBytes(request.getImageBytes());
         }
         currStory = new ArrayList<>();
+        currFollowees = new ArrayList<>();
+        currFollowers = new ArrayList<>();
+        currUser = user;
+
         return new RegisterResponse(user, new AuthToken());
     }
 
@@ -150,7 +220,7 @@ public class ServerFacade {
      */
     public LoginResponse login(LoginRequest request) {
         User user;
-        if (request.getAlias().equals("")) {
+        if (request.getAlias().equals("") || request.getAlias().equalsIgnoreCase("@testuser")) {
             user = new User("Test", "User",
                     ServerFacade.MALE_IMAGE_URL);
             currStory = story0;
@@ -159,6 +229,9 @@ public class ServerFacade {
                     ServerFacade.MALE_IMAGE_URL);
             currStory = new ArrayList<>();
         }
+        currFollowees = new ArrayList<>(followees);
+        currFollowers = new ArrayList<>(followers);
+        currUser = user;
 
         return new LoginResponse(user, new AuthToken());
     }
@@ -186,7 +259,7 @@ public class ServerFacade {
             }
         }
 
-        List<User> allFollowees = getDummyFollowees();
+        List<User> allFollowees = getDummyFollowees(request);
         List<User> responseFollowees = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -239,8 +312,25 @@ public class ServerFacade {
      *
      * @return the generator.
      */
+    List<User> getDummyFollowees(FollowingRequest request) {
+        if (currUser == null) { //for ServerFacadeTest to work
+            return getDummyFollowees();
+        }
+        if (!request.getFollower().getAlias().equalsIgnoreCase(currUser.getAlias())) {
+            ArrayList<User> otherFollowees = new ArrayList<>(followees);
+            otherFollowees.remove(request.getFollower());
+            return otherFollowees;
+        }
+        return currFollowees;
+    }
+    /**
+     * Returns the list of dummy followee data. This is written as a separate method to allow
+     * mocking of the followees.
+     *
+     * @return the generator.
+     */
     List<User> getDummyFollowees() {
-        return followees;
+        return allUsers;
     }
 
     /**
@@ -266,7 +356,7 @@ public class ServerFacade {
             }
         }
 
-        List<User> allFollowers = getDummyFollowers();
+        List<User> allFollowers = getDummyFollowers(request);
         List<User> responseFollowers = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
@@ -319,8 +409,13 @@ public class ServerFacade {
      *
      * @return the generator.
      */
-    List<User> getDummyFollowers() {
-        return followers;
+    List<User> getDummyFollowers(FollowersRequest request) {
+        if (!request.getFollowee().getAlias().equalsIgnoreCase(currUser.getAlias())) {
+            ArrayList<User> otherFollowers = new ArrayList<>(followers);
+            otherFollowers.remove(request.getFollowee());
+            return otherFollowers;
+        }
+        return currFollowers;
     }
     
     /**
@@ -370,16 +465,16 @@ public class ServerFacade {
      * @return the generator.
      */
     List<Status> getDummyStoryStatuses(User user) {
-        if (user.equals(user2)){
-            return Arrays.asList(status10);
-        } else if (user.equals(user7)){
-            return Arrays.asList(status11);
-        } else if (user.equals(user19)){
-            return Arrays.asList(status12);
-        }else if (!user.equals(user0) && allUsers.contains(user)) {
-            return new ArrayList<>();
-        } else {
+        if (user.equals(currUser)) {
             return currStory;
+        } else {
+            ArrayList<Status> otherStory = new ArrayList<>();
+            for (Status status : allStatuses) {
+                if (user.equals(status.getUser())) {
+                    otherStory.add(status);
+                }
+            }
+            return otherStory;
         }
     }
 
@@ -461,16 +556,26 @@ public class ServerFacade {
      */
     List<Status> getDummyFeedStatuses() {
         for (Status status : allStatuses) {
-            if (followees.contains(status.getUser()) && !feed.contains(status)){
+            if (currFollowees.contains(status.getUser()) && !feed.contains(status)){
                 feed.add(status);
             }
         }
+        ArrayList<Status> toRemove = new ArrayList<>();
         for (Status status : feed){
-            if (!followees.contains(status.getUser())){
-                feed.remove(status);
-                break;
+            if (!currFollowees.contains(status.getUser())){
+                toRemove.add(status);
             }
         }
+        for (Status status : toRemove) {
+            feed.remove(status);
+        }
+
+        Collections.sort(feed, new Comparator<Status>() {
+            @Override
+            public int compare(Status o1, Status o2) {
+                return -1 * (o1.getDate().compareTo(o2.getDate()));
+            }
+        });
 
         return feed;
     }
@@ -486,19 +591,23 @@ public class ServerFacade {
      */
     public ProfileInfoResponse getProfileInfo(ProfileInfoRequest request) {
         if (request.getRequestedUser().equals(request.getRequestingUser())){
-            return new ProfileInfoResponse(followers.size(), followees.size(), false);
+            return new ProfileInfoResponse(currFollowers.size(), currFollowees.size(), false);
         } else {
             boolean isFollowed;
-            if (followees.contains(request.getRequestedUser())) {
+            if (currFollowees.contains(request.getRequestedUser())) {
                 isFollowed = true;
+                return new ProfileInfoResponse(followers.size(), followees.size() - 1, isFollowed);
             } else {
                 isFollowed = false;
+                return new ProfileInfoResponse(followers.size() - 1, followees.size() - 1, isFollowed);
             }
-            return new ProfileInfoResponse(34, 48, isFollowed);
         }
     }
 
     public UserResponse getUser(UserRequest request) {
+        if (request.getAlias().equalsIgnoreCase(currUser.getAlias())){
+            return new UserResponse(currUser);
+        }
         for (User user : allUsers) {
             if (user.getAlias().equalsIgnoreCase(request.getAlias())){
                 return new UserResponse(user);
@@ -525,10 +634,10 @@ public class ServerFacade {
      * @return the follow response.
      */
     public FollowResponse follow(FollowRequest request) {
-        if (followees.contains(request.getToBeFollowed())){
+        if (currFollowees.contains(request.getToBeFollowed())){
             return new FollowResponse(request.getRequestingUser().getAlias() + " is already following " + request.getToBeFollowed().getAlias() + ".");
         } else {
-            followees.add(0, request.getToBeFollowed());
+            currFollowees.add(0, request.getToBeFollowed());
             return new FollowResponse();
         }
     }
@@ -540,10 +649,10 @@ public class ServerFacade {
      * @return the unfollow response.
      */
     public UnfollowResponse unfollow(UnfollowRequest request) {
-        if (!followees.contains(request.getToBeUnfollowed())){
+        if (!currFollowees.contains(request.getToBeUnfollowed())){
             return new UnfollowResponse(request.getRequestingUser().getAlias() + " is not currently following " + request.getToBeUnfollowed().getAlias() + ".");
         } else {
-            followees.remove(request.getToBeUnfollowed());
+            currFollowees.remove(request.getToBeUnfollowed());
             return new UnfollowResponse();
         }
     }
