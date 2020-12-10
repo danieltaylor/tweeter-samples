@@ -143,7 +143,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
 
             Linkify.TransformFilter filter = (match, url) -> match.group();
             Pattern mentionPattern = Pattern.compile("@([A-Za-z0-9_-]+)");
-            String mentionScheme = "tweeter://profile/?auth=" + authToken + "&requestinguser="+ user.getAlias() + "&requesteduser=";
+            String mentionScheme = "tweeter://profile/?auth=" + authToken.getValue() + "&requestinguser="+ user.getAlias() + "&requesteduser=";
             Linkify.addLinks(statusBody, Linkify.ALL);
             Linkify.addLinks(statusBody, mentionPattern, mentionScheme, null, filter);
         }

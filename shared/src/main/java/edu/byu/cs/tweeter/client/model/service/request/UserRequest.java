@@ -35,7 +35,7 @@ public class UserRequest {
      *
      * @param alias the alias.
      */
-    public void getAlias(String alias) {
+    public void setAlias(String alias) {
         this.alias = alias;
     }
 }

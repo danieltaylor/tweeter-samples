@@ -11,12 +11,9 @@ import edu.byu.cs.tweeter.client.model.domain.AuthToken;
 import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.client.model.service.request.FollowRequest;
-import edu.byu.cs.tweeter.client.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.client.model.service.response.FollowResponse;
-import edu.byu.cs.tweeter.client.model.service.response.ProfileInfoResponse;
 import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
-import edu.byu.cs.tweeter.server.dao.FollowingDAO;
+import edu.byu.cs.tweeter.server.dao.FollowsDAO;
 
 public class FollowServiceImplTest {
 
@@ -24,8 +21,7 @@ public class FollowServiceImplTest {
     private FollowRequest invalidRequest;
     private FollowResponse successResponse;
     private FollowResponse failureResponse;
-    private FollowersDAO mockFollowersDAO;
-    private FollowingDAO mockFollowingDAO;
+    private FollowsDAO mockFollowsDAO;
     private AuthTokenDAO mockAuthTokenDAO;
     private FollowServiceImpl followServiceImplSpy;
 
@@ -45,27 +41,23 @@ public class FollowServiceImplTest {
         successResponse = new FollowResponse();
         failureResponse = new FollowResponse("Failed");
 
-        mockFollowersDAO = Mockito.mock(FollowersDAO.class);
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
+        mockFollowsDAO = Mockito.mock(FollowsDAO.class);
         mockAuthTokenDAO = Mockito.mock(AuthTokenDAO.class);
 
-        Mockito.when(mockFollowersDAO.follow(validRequest)).thenReturn(successResponse);
-        Mockito.when(mockFollowingDAO.follow(validRequest)).thenReturn(successResponse);
+        Mockito.when(mockFollowsDAO.follow(validRequest)).thenReturn(successResponse);
         Mockito.when(mockAuthTokenDAO.isValid(validRequest.getAuthToken(), validRequest.getRequestingUser().getAlias())).thenReturn(true);
 
-        Mockito.when(mockFollowersDAO.follow(invalidRequest)).thenReturn(failureResponse);
-        Mockito.when(mockFollowingDAO.follow(invalidRequest)).thenReturn(failureResponse);
+        Mockito.when(mockFollowsDAO.follow(invalidRequest)).thenReturn(failureResponse);
         Mockito.when(mockAuthTokenDAO.isValid(invalidRequest.getAuthToken(), invalidRequest.getRequestingUser().getAlias())).thenReturn(true);
 
         followServiceImplSpy = Mockito.spy(FollowServiceImpl.class);
-        Mockito.when(followServiceImplSpy.getFollowersDAO()).thenReturn(mockFollowersDAO);
-        Mockito.when(followServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+        Mockito.when(followServiceImplSpy.getFollowsDAO()).thenReturn(mockFollowsDAO);
         Mockito.when(followServiceImplSpy.getAuthTokenDAO()).thenReturn(mockAuthTokenDAO);
     }
 
     /**
      * Verify that the {@link FollowServiceImpl#follow(FollowRequest)}
-     * method returns the same result as the {@link FollowersDAO}, {@link FollowingDAO}, and {@link AuthToken}classes.
+     * method returns the same result as the {@link FollowsDAO} and {@link AuthToken} classes.
      */
     @Test
     public void testFollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
@@ -76,7 +68,7 @@ public class FollowServiceImplTest {
 
     /**
      * Verify that the {@link FollowServiceImpl#follow(FollowRequest)}
-     * method returns the same result as the {@link FollowersDAO}, {@link FollowingDAO}, and {@link AuthToken}classes.
+     * method returns the same result as the {@link FollowsDAO} and {@link AuthToken} classes.
      */
     @Test
     public void testFollow_invalidRequest_correctResponse() throws IOException, TweeterRemoteException {

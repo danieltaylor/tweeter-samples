@@ -12,14 +12,10 @@ import edu.byu.cs.tweeter.client.model.domain.AuthToken;
 import edu.byu.cs.tweeter.client.model.domain.Status;
 import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.client.model.service.request.FollowRequest;
 import edu.byu.cs.tweeter.client.model.service.request.PostRequest;
-import edu.byu.cs.tweeter.client.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.client.model.service.response.PostResponse;
 import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
 import edu.byu.cs.tweeter.server.dao.FeedDAO;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
-import edu.byu.cs.tweeter.server.dao.FollowingDAO;
 import edu.byu.cs.tweeter.server.dao.StoryDAO;
 
 public class PostServiceImplTest {
@@ -76,7 +72,6 @@ public class PostServiceImplTest {
         PostResponse response = postServiceImplSpy.post(validRequest);
 
         Assertions.assertEquals(successResponse.isSuccess(), response.isSuccess());
-        Assertions.assertEquals(successResponse.getStatus(), response.getStatus());
     }
 
     /**
@@ -88,6 +83,5 @@ public class PostServiceImplTest {
         PostResponse response = postServiceImplSpy.post(invalidRequest);
 
         Assertions.assertEquals(failureResponse.isSuccess(), response.isSuccess());
-        Assertions.assertEquals(failureResponse.getStatus(), response.getStatus());
     }
 }

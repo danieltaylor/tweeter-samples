@@ -5,50 +5,34 @@ import edu.byu.cs.tweeter.client.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.client.model.service.response.FollowResponse;
 import edu.byu.cs.tweeter.client.model.service.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
-import edu.byu.cs.tweeter.server.dao.FollowingDAO;
+import edu.byu.cs.tweeter.server.dao.FollowsDAO;
+import edu.byu.cs.tweeter.server.dao.UserDAO;
 
 public class UnfollowServiceImpl implements UnfollowService {
 
     @Override
     public UnfollowResponse unfollow(UnfollowRequest request) {
-        UnfollowResponse response1 = getFollowersDAO().unfollow(request);
-        if (!response1.isSuccess()){
-            return response1;
-        }
-
-        UnfollowResponse response2 =  getFollowingDAO().unfollow(request);
-        if (!response2.isSuccess()) {
-            return response2;
-        }
-
         if (!getAuthTokenDAO().isValid(request.getAuthToken(), request.getRequestingUser().getAlias())){
             return new UnfollowResponse("Invalid auth token.");
+        } else {
+            UnfollowResponse response = getFollowsDAO().unfollow(request);
+            if (response.isSuccess()) {
+                getUserDAO().decrementFolloweeCount(request.getRequestingUser().getAlias());
+                getUserDAO().decrementFollowerCount(request.getToBeUnfollowed().getAlias());
+            }
+            return response;
         }
-
-        return new UnfollowResponse();
     }
 
     /**
-     * Returns an instance of {@link FollowingDAO}. Allows mocking of the FollowingDAO class
-     * for testing purposes. All usages of FollowingDAO should get their FollowingDAO
+     * Returns an instance of {@link FollowsDAO}. Allows mocking of the FollowsDAO class
+     * for testing purposes. All usages of FollowsDAO should get their FollowsDAO
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    FollowingDAO getFollowingDAO() {
-        return new FollowingDAO();
-    }
-
-    /**
-     * Returns an instance of {@link FollowersDAO}. Allows mocking of the FollowersDAO class
-     * for testing purposes. All usages of FollowersDAO should get their FollowersDAO
-     * instance from this method to allow for mocking of the instance.
-     *
-     * @return the instance.
-     */
-    FollowersDAO getFollowersDAO() {
-        return new FollowersDAO();
+    FollowsDAO getFollowsDAO() {
+        return new FollowsDAO();
     }
 
     /**
@@ -60,5 +44,16 @@ public class UnfollowServiceImpl implements UnfollowService {
      */
     AuthTokenDAO getAuthTokenDAO() {
         return new AuthTokenDAO();
+    }
+
+    /**
+     * Returns an instance of {@link UserDAO}. Allows mocking of the UserDAO class
+     * for testing purposes. All usages of UserDAO should get their UserDAO
+     * instance from this method to allow for mocking of the instance.
+     *
+     * @return the instance.
+     */
+    UserDAO getUserDAO() {
+        return new UserDAO();
     }
 }

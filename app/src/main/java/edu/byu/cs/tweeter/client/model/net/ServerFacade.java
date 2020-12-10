@@ -204,11 +204,12 @@ public class ServerFacade {
     public RegisterResponse register(RegisterRequest request, String urlPath) throws IOException, TweeterRemoteException {
         RegisterResponse response = clientCommunicator.doPost(urlPath, request, null, RegisterResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return response;
+//        if(response.isSuccess()) {
+//            return response;
+//        } else {
+//            throw new RuntimeException(response.getMessage());
+//        }
     }
 
     /**

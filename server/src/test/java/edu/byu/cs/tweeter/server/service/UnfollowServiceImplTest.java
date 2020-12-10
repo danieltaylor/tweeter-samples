@@ -13,8 +13,7 @@ import edu.byu.cs.tweeter.client.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.client.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.client.model.service.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
-import edu.byu.cs.tweeter.server.dao.FollowingDAO;
+import edu.byu.cs.tweeter.server.dao.FollowsDAO;
 
 public class UnfollowServiceImplTest {
 
@@ -22,8 +21,7 @@ public class UnfollowServiceImplTest {
     private UnfollowRequest invalidRequest;
     private UnfollowResponse successResponse;
     private UnfollowResponse failureResponse;
-    private FollowersDAO mockFollowersDAO;
-    private FollowingDAO mockFollowingDAO;
+    private FollowsDAO mockFollowsDAO;
     private AuthTokenDAO mockAuthTokenDAO;
     private UnfollowServiceImpl unfollowServiceImplSpy;
 
@@ -43,27 +41,23 @@ public class UnfollowServiceImplTest {
         successResponse = new UnfollowResponse();
         failureResponse = new UnfollowResponse("Failed");
 
-        mockFollowersDAO = Mockito.mock(FollowersDAO.class);
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
+        mockFollowsDAO = Mockito.mock(FollowsDAO.class);
         mockAuthTokenDAO = Mockito.mock(AuthTokenDAO.class);
 
-        Mockito.when(mockFollowersDAO.unfollow(validRequest)).thenReturn(successResponse);
-        Mockito.when(mockFollowingDAO.unfollow(validRequest)).thenReturn(successResponse);
+        Mockito.when(mockFollowsDAO.unfollow(validRequest)).thenReturn(successResponse);
         Mockito.when(mockAuthTokenDAO.isValid(validRequest.getAuthToken(), validRequest.getRequestingUser().getAlias())).thenReturn(true);
 
-        Mockito.when(mockFollowersDAO.unfollow(invalidRequest)).thenReturn(failureResponse);
-        Mockito.when(mockFollowingDAO.unfollow(invalidRequest)).thenReturn(failureResponse);
+        Mockito.when(mockFollowsDAO.unfollow(invalidRequest)).thenReturn(failureResponse);
         Mockito.when(mockAuthTokenDAO.isValid(invalidRequest.getAuthToken(), invalidRequest.getRequestingUser().getAlias())).thenReturn(true);
 
         unfollowServiceImplSpy = Mockito.spy(UnfollowServiceImpl.class);
-        Mockito.when(unfollowServiceImplSpy.getFollowersDAO()).thenReturn(mockFollowersDAO);
-        Mockito.when(unfollowServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+        Mockito.when(unfollowServiceImplSpy.getFollowsDAO()).thenReturn(mockFollowsDAO);
         Mockito.when(unfollowServiceImplSpy.getAuthTokenDAO()).thenReturn(mockAuthTokenDAO);
     }
 
     /**
      * Verify that the {@link UnfollowServiceImpl#unfollow(UnfollowRequest)}
-     * method returns the same result as the {@link FollowersDAO}, {@link FollowingDAO}, and {@link AuthToken}classes.
+     * method returns the same result as the {@link FollowsDAO} and {@link AuthToken} classes.
      */
     @Test
     public void testUnfollow_validRequest_correctResponse() throws IOException, TweeterRemoteException {
@@ -74,7 +68,7 @@ public class UnfollowServiceImplTest {
 
     /**
      * Verify that the {@link UnfollowServiceImpl#unfollow(UnfollowRequest)}
-     * method returns the same result as the {@link FollowersDAO}, {@link FollowingDAO}, and {@link AuthToken}classes.
+     * method returns the same result as the {@link FollowsDAO} and {@link AuthToken} classes.
      */
     @Test
     public void testUnfollow_invalidRequest_correctResponse() throws IOException, TweeterRemoteException {

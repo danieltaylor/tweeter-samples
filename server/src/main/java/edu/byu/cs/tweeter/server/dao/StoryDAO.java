@@ -1,10 +1,14 @@
 package edu.byu.cs.tweeter.server.dao;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.ZoneId;
+import java.util.*;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import edu.byu.cs.tweeter.client.model.domain.Status;
 import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.service.request.PostRequest;
@@ -40,6 +44,17 @@ public class StoryDAO {
     private final Status status9 = new Status(user0, "I'm not sure how this whole thing works",
             LocalDateTime.of(2020,10,7,19,20));
 
+    private final Table table;
+
+    public StoryDAO() {
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+                .withRegion("us-west-2")
+                .build();
+
+        DynamoDB dynamoDB = new DynamoDB(client);
+
+        table = dynamoDB.getTable("story");
+    }
 
     /**
      * Returns the statuses of the user specified in the request. Uses information in
@@ -51,24 +66,54 @@ public class StoryDAO {
      * @return the statuses.
      */
     public StoryResponse getStory(StoryRequest request) {
-        // TODO: Generates dummy data. Replace with a real implementation.
         assert request.getLimit() > 0;
         assert request.getUser() != null;
 
-        List<Status> allStatuses = getDummyStory();
         List<Status> responseStatus = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
 
-        if(request.getLimit() > 0) {
-            if (allStatuses != null) {
-                int statusesIndex = getStatusesStartingIndex(request.getLastStatus(), allStatuses);
+        if (request.getLimit() > 0) {
+            String lastKeyAlias = null;
+            long lastKeyEpoch = 0;
+            if (request.getLastStatus() != null) {
+                lastKeyAlias = request.getLastStatus().getUser().getAlias();
+                lastKeyEpoch = request.getLastStatus().timestampToEpoch();
+            }
+            Map<String, Object> valueMap = new HashMap<String, Object>();
+            valueMap.put(":a", request.getUser().getAlias());
 
-                for(int limitCounter = 0; statusesIndex < allStatuses.size() && limitCounter < request.getLimit(); statusesIndex++, limitCounter++) {
-                    responseStatus.add(allStatuses.get(statusesIndex));
+            QuerySpec querySpec = new QuerySpec().withKeyConditionExpression("alias = :a")
+                    .withValueMap(valueMap)
+                    .withScanIndexForward(true)
+                    .withMaxResultSize(10);
+
+            if (lastKeyAlias != null) {
+                querySpec = querySpec.withExclusiveStartKey("alias", lastKeyAlias, "epoch_time_posted", lastKeyEpoch);
+            }
+
+            ItemCollection<QueryOutcome> items = null;
+            Iterator<Item> iterator = null;
+            Item item = null;
+
+            try {
+                System.out.println("Getting story of " + request.getUser().getAlias());
+                items = table.query(querySpec);
+
+                iterator = items.firstPage().iterator();
+                while (iterator.hasNext()) {
+                    item = iterator.next();
+                    Status status = new Status(new User(null, null, item.getString("alias"), null), item.getString("body"), item.getString("timestamp"));
+                    responseStatus.add(status);
                 }
 
-                hasMorePages = statusesIndex < allStatuses.size();
+                Map<String, AttributeValue> lastKey = items.firstPage().getLowLevelResult().getQueryResult().getLastEvaluatedKey();
+                if (lastKey != null) {
+                    hasMorePages = true;
+                }
+            } catch (Exception e) {
+                System.err.println("Unable to query story");
+                System.err.println(e.getMessage());
             }
         }
 
@@ -122,7 +167,20 @@ public class StoryDAO {
      * @return PostResponse indicating success or failure.
      */
     public PostResponse addToStory(PostRequest request) {
-        //TODO: Add real implementation
-        return new PostResponse();
+        Status status = request.getStatus();
+        long epoch = status.timestampToEpoch();
+        try {
+            PutItemOutcome outcome = table
+                    .putItem(new Item()
+                            .withPrimaryKey("alias", status.getUser().getAlias(), "epoch_time_posted", epoch)
+                            .withString("body", status.getBody())
+                            .withString("timestamp", status.getTimestamp()));
+            return new PostResponse();
+        } catch (Exception e) {
+            System.err.println("Unable to add status to story for: " + status.getUser().getAlias());
+            System.err.println(e.getMessage());
+            return new PostResponse("Post to story failed for: " + status.getUser().getAlias());
+        }
+
     }
 }

@@ -23,6 +23,7 @@ public class RegisterHandler implements RequestHandler<RegisterRequest, Register
     @Override
     public RegisterResponse handleRequest(RegisterRequest request, Context context) {
         RegisterServiceImpl registerService = new RegisterServiceImpl();
+        System.out.println(request.getImageBytes() == null ? "imageBytes is null" : "imageBytes has a value!");
         return registerService.register(request);
     }
 }

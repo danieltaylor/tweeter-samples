@@ -7,16 +7,10 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.client.model.domain.AuthToken;
 import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.net.TweeterRemoteException;
-import edu.byu.cs.tweeter.client.model.service.request.UnfollowRequest;
 import edu.byu.cs.tweeter.client.model.service.request.UserRequest;
-import edu.byu.cs.tweeter.client.model.service.response.UnfollowResponse;
 import edu.byu.cs.tweeter.client.model.service.response.UserResponse;
-import edu.byu.cs.tweeter.server.dao.AuthTokenDAO;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
-import edu.byu.cs.tweeter.server.dao.FollowingDAO;
 import edu.byu.cs.tweeter.server.dao.UserDAO;
 
 public class UserServiceImplTest {
@@ -46,8 +40,8 @@ public class UserServiceImplTest {
 
         mockUserDAO = Mockito.mock(UserDAO.class);
 
-        Mockito.when(mockUserDAO.user(validRequest)).thenReturn(successResponse);
-        Mockito.when(mockUserDAO.user(invalidRequest)).thenReturn(failureResponse);
+        Mockito.when(mockUserDAO.user(validAlias)).thenReturn(requestedUser);
+        Mockito.when(mockUserDAO.user(invalidAlias)).thenReturn(null);
 
         userServiceImplSpy = Mockito.spy(UserServiceImpl.class);
         Mockito.when(userServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);

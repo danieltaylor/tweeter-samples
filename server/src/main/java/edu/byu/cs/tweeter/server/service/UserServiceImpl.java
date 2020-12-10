@@ -10,7 +10,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUser(UserRequest request) {
-        return getUserDAO().user(request);
+        User user = getUserDAO().user(request.getAlias());
+        if (user != null) {
+            return new UserResponse(user);
+        } else {
+            return new UserResponse("Could not find user.");
+        }
     }
 
     /**

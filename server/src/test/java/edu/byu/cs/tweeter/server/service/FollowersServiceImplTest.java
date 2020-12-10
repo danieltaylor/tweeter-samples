@@ -12,13 +12,17 @@ import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.client.model.service.request.FollowersRequest;
 import edu.byu.cs.tweeter.client.model.service.response.FollowersResponse;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
+import edu.byu.cs.tweeter.client.model.service.response.LiteFollowersResponse;
+import edu.byu.cs.tweeter.server.dao.FollowsDAO;
+import edu.byu.cs.tweeter.server.dao.UserDAO;
 
 public class FollowersServiceImplTest {
 
     private FollowersRequest request;
+    private LiteFollowersResponse daoResponse;
     private FollowersResponse expectedResponse;
-    private FollowersDAO mockFollowersDAO;
+    private FollowsDAO mockFollowsDAO;
+    private UserDAO mockUserDAO;
     private FollowersServiceImpl followersServiceImplSpy;
 
     @BeforeEach
@@ -35,18 +39,26 @@ public class FollowersServiceImplTest {
         // Setup a request object to use in the tests
         request = new FollowersRequest(currentUser, 3, null);
 
-        // Setup a mock FollowersDAO that will return known responses
-        expectedResponse = new FollowersResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
-        mockFollowersDAO = Mockito.mock(FollowersDAO.class);
-        Mockito.when(mockFollowersDAO.getFollowers(request)).thenReturn(expectedResponse);
+        // Setup a mock FollowsDAO that will return known responses
+        daoResponse = new LiteFollowersResponse(Arrays.asList(resultUser1.getAlias(), resultUser2.getAlias(), resultUser3.getAlias()), false);
+        mockFollowsDAO = Mockito.mock(FollowsDAO.class);
+        Mockito.when(mockFollowsDAO.getFollowers(request)).thenReturn(daoResponse);
+
+        mockUserDAO = Mockito.mock(UserDAO.class);
+        Mockito.when(mockUserDAO.user(resultUser1.getAlias())).thenReturn(resultUser1);
+        Mockito.when(mockUserDAO.user(resultUser2.getAlias())).thenReturn(resultUser2);
+        Mockito.when(mockUserDAO.user(resultUser3.getAlias())).thenReturn(resultUser3);
 
         followersServiceImplSpy = Mockito.spy(FollowersServiceImpl.class);
-        Mockito.when(followersServiceImplSpy.getFollowersDAO()).thenReturn(mockFollowersDAO);
+        Mockito.when(followersServiceImplSpy.getFollowsDAO()).thenReturn(mockFollowsDAO);
+        Mockito.when(followersServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);
+
+        expectedResponse = new FollowersResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), false);
     }
 
     /**
      * Verify that the {@link FollowersServiceImpl#getFollowers(FollowersRequest)}
-     * method returns the same result as the {@link FollowersDAO} class.
+     * method returns the same result as the {@link FollowsDAO} class.
      */
     @Test
     public void testGetFollowers_validRequest_correctResponse() throws IOException, TweeterRemoteException {

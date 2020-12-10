@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements ProfileInfoPresen
         }
         authToken = (AuthToken) getIntent().getSerializableExtra(AUTH_TOKEN_KEY);
 
-        ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
-        GetProfileInfoTask getProfileInfoTask = new GetProfileInfoTask(profileInfoPresenter, MainActivity.this);
-        getProfileInfoTask.execute(profileInfoRequest);
+//        ProfileInfoRequest profileInfoRequest = new ProfileInfoRequest(user, user);
+//        GetProfileInfoTask getProfileInfoTask = new GetProfileInfoTask(profileInfoPresenter, MainActivity.this);
+//        getProfileInfoTask.execute(profileInfoRequest);
 
         followeeCount = findViewById(R.id.followeeCount);
         followerCount = findViewById(R.id.followerCount);

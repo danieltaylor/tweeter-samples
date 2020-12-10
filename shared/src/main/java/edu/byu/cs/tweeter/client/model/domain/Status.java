@@ -1,14 +1,14 @@
 package edu.byu.cs.tweeter.client.model.domain;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 public class Status {
 	private User user;
 	private String timestamp;
 	private String body;
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a");
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d MMM yyyy hh:mm a");
 
 	/**
 	 * Allows construction of the object from Json. Private so it won't be called by other code.
@@ -17,7 +17,7 @@ public class Status {
 
 	public Status(User user, String body, LocalDateTime date) {
 		this.user = user;
-		this.timestamp = date.format(formatter);
+		this.timestamp = date.format(DATE_TIME_FORMATTER);
 		this.body = body;
 	}
 
@@ -30,7 +30,7 @@ public class Status {
 	public Status(User user, String body) {
 		this.user = user;
 		this.body = body;
-		this.timestamp = LocalDateTime.now().format(formatter);
+		this.timestamp = LocalDateTime.now().format(DATE_TIME_FORMATTER);
 	}
 
 	public User getUser() {
@@ -47,6 +47,10 @@ public class Status {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public long timestampToEpoch() {
+		return LocalDateTime.parse(this.getTimestamp(), DATE_TIME_FORMATTER).atZone(ZoneId.systemDefault()).toEpochSecond();
 	}
 
 //	public LocalDateTime getDate() {

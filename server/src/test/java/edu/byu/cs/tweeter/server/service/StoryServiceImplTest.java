@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.server.service;
 
+import edu.byu.cs.tweeter.server.dao.UserDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ public class StoryServiceImplTest {
     private StoryRequest request;
     private StoryResponse expectedResponse;
     private StoryDAO mockStoryDAO;
+    private UserDAO mockUserDAO;
     private StoryServiceImpl storyServiceImplSpy;
 
     @BeforeEach
@@ -42,8 +44,12 @@ public class StoryServiceImplTest {
         mockStoryDAO = Mockito.mock(StoryDAO.class);
         Mockito.when(mockStoryDAO.getStory(request)).thenReturn(expectedResponse);
 
+        mockUserDAO = Mockito.mock(UserDAO.class);
+        Mockito.when(mockUserDAO.user(currentUser.getAlias())).thenReturn(currentUser);
+
         storyServiceImplSpy = Mockito.spy(StoryServiceImpl.class);
         Mockito.when(storyServiceImplSpy.getStoryDAO()).thenReturn(mockStoryDAO);
+        Mockito.when(storyServiceImplSpy.getUserDAO()).thenReturn(mockUserDAO);
     }
 
     /**

@@ -1,9 +1,14 @@
 package edu.byu.cs.tweeter.server.service;
 
+import edu.byu.cs.tweeter.client.model.domain.Status;
+import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.service.StoryService;
 import edu.byu.cs.tweeter.client.model.service.request.StoryRequest;
 import edu.byu.cs.tweeter.client.model.service.response.StoryResponse;
 import edu.byu.cs.tweeter.server.dao.StoryDAO;
+import edu.byu.cs.tweeter.server.dao.UserDAO;
+
+import java.util.List;
 
 /**
  * Contains the business logic for getting a user's story.
@@ -21,7 +26,22 @@ public class StoryServiceImpl implements StoryService {
      */
     @Override
     public StoryResponse getStory(StoryRequest request) {
-        return getStoryDAO().getStory(request);
+        StoryResponse response = getStoryDAO().getStory(request);
+        if (response.isSuccess()) {
+            //add full user info to each status
+            List<Status> statuses = response.getStatuses();
+            for (int i = 0; i < statuses.size(); i++) {
+                Status status = statuses.get(i);
+                User user = status.getUser();
+                user = getUserDAO().user(user.getAlias());
+                status.setUser(user);
+                statuses.set(i, status);
+            }
+            return new StoryResponse(statuses, response.getHasMorePages());
+        }
+        else {
+            return response;
+        }
     }
 
     /**
@@ -33,5 +53,16 @@ public class StoryServiceImpl implements StoryService {
      */
     StoryDAO getStoryDAO() {
         return new StoryDAO();
+    }
+
+    /**
+     * Returns an instance of {@link UserDAO}. Allows mocking of the UserDAO class
+     * for testing purposes. All usages of UserDAO should get their UserDAO
+     * instance from this method to allow for mocking of the instance.
+     *
+     * @return the instance.
+     */
+    UserDAO getUserDAO() {
+        return new UserDAO();
     }
 }

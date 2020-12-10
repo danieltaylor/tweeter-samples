@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.server.service;
 
+import edu.byu.cs.tweeter.server.dao.UserDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,15 +12,14 @@ import edu.byu.cs.tweeter.client.model.domain.User;
 import edu.byu.cs.tweeter.client.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.client.model.service.request.ProfileInfoRequest;
 import edu.byu.cs.tweeter.client.model.service.response.ProfileInfoResponse;
-import edu.byu.cs.tweeter.server.dao.FollowersDAO;
-import edu.byu.cs.tweeter.server.dao.FollowingDAO;
+import edu.byu.cs.tweeter.server.dao.FollowsDAO;
 
 public class ProfileInfoServiceImplTest {
 
     private ProfileInfoRequest request;
     private ProfileInfoResponse expectedResponse;
-    private FollowersDAO mockFollowersDAO;
-    private FollowingDAO mockFollowingDAO;
+    private FollowsDAO mockFollowsDAO;
+    private UserDAO mockUserDAO;
     private ProfileInfoServiceImpl profileInfoServiceImplSpy;
 
     @BeforeEach
@@ -34,20 +34,19 @@ public class ProfileInfoServiceImplTest {
 
         // Setup a mock ProfileInfoDAO that will return known responses
         expectedResponse = new ProfileInfoResponse(11, 18, false);
-        mockFollowersDAO = Mockito.mock(FollowersDAO.class);
-        mockFollowingDAO = Mockito.mock(FollowingDAO.class);
-        Mockito.when(mockFollowersDAO.getFollowerCount(request.getRequestedUser())).thenReturn(expectedResponse.getNumFollowers());
-        Mockito.when(mockFollowingDAO.getFolloweeCount(request.getRequestedUser())).thenReturn(expectedResponse.getNumFollowees());
-        Mockito.when(mockFollowingDAO.isFollowing(request.getRequestingUser(), request.getRequestedUser())).thenReturn(expectedResponse.isFollowed());
+        mockFollowsDAO = Mockito.mock(FollowsDAO.class);
+        mockUserDAO = Mockito.mock(UserDAO.class);
+        Mockito.when(mockUserDAO.getFollowerCount(request.getRequestedUser().getAlias())).thenReturn(expectedResponse.getNumFollowers());
+        Mockito.when(mockUserDAO.getFolloweeCount(request.getRequestedUser().getAlias())).thenReturn(expectedResponse.getNumFollowees());
+        Mockito.when(mockFollowsDAO.isFollowing(request.getRequestingUser().getAlias(), request.getRequestedUser().getAlias())).thenReturn(expectedResponse.isFollowed());
 
         profileInfoServiceImplSpy = Mockito.spy(ProfileInfoServiceImpl.class);
-        Mockito.when(profileInfoServiceImplSpy.getFollowersDAO()).thenReturn(mockFollowersDAO);
-        Mockito.when(profileInfoServiceImplSpy.getFollowingDAO()).thenReturn(mockFollowingDAO);
+        Mockito.when(profileInfoServiceImplSpy.getFollowsDAO()).thenReturn(mockFollowsDAO);
     }
 
     /**
      * Verify that the {@link ProfileInfoServiceImpl#getProfileInfo(ProfileInfoRequest)}
-     * method returns the same result as the {@link FollowersDAO} and {@link FollowingDAO} classes.
+     * method returns the same result as the {@link FollowsDAO} class.
      */
     @Test
     public void testGetProfileInfo_validRequest_correctResponse() throws IOException, TweeterRemoteException {

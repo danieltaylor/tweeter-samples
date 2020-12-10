@@ -60,4 +60,13 @@ public class ProfileInfoResponse extends Response {
     public boolean isFollowed() {
         return isFollowed;
     }
+
+    /**
+     * Returns true if the requested user is followed by the requesting user, else false.
+     *
+     * @return whether the requested user is following the requesting user.
+     */
+    public boolean getIsFollowed() {
+        return isFollowed;
+    }
 }
